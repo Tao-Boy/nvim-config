@@ -1,21 +1,9 @@
 local ls = require("luasnip")
 local s = ls.snippet
-local sn = ls.snippet_node
-local t = ls.text_node
 local i = ls.insert_node
-local f = ls.function_node
-local d = ls.dynamic_node
 local fmta = require("luasnip.extras.fmt").fmta
 local rep = require("luasnip.extras").rep
-local line_begin = require("luasnip.extras.expand_conditions").line_begin
 local tex = require("lang.markdown")
-local get_visual = function(args, parent)
-	if #parent.snippet.env.SELECT_RAW > 0 then
-		return sn(nil, t(parent.snippet.env.SELECT_RAW))
-	else -- If SELECT_RAW is empty, return a blank insert node
-		return sn(nil, i(1))
-	end
-end
 
 -- 数学定理及其其他的一些环境
 --------------------------------------------------------------------------
@@ -23,59 +11,59 @@ end
 --------------------------------------------------------------------------
 
 return {
-	s(
-		{ trig = "mk", snippetType = "autosnippet" },
-		fmta(
-			[[
+  s(
+    { trig = "mk", snippetType = "autosnippet" },
+    fmta(
+      [[
       $<>$ 
       ]],
-			{
-				i(1),
-			}
-		)
-	),
-	s(
-		{ trig = "dm", snippetType = "autosnippet" },
-		fmta(
-			[[
+      {
+        i(1),
+      }
+    )
+  ),
+  s(
+    { trig = "dm", snippetType = "autosnippet" },
+    fmta(
+      [[
             $$
             <>
             $$
         ]],
-			{
-				i(1),
-			}
-		)
-	),
-	-- 开始一个环境
-	s(
-		{ trig = "bal", snippetType = "autosnippet" },
-		fmta(
-			[[
+      {
+        i(1),
+      }
+    )
+  ),
+  -- 开始一个环境
+  s(
+    { trig = "bal", snippetType = "autosnippet" },
+    fmta(
+      [[
       \begin{align*}
         <>
       \end{align*}
       ]],
-			{
-				i(0),
-			}
-		),
-		{ condition = tex.in_mathzone }
-	),
-	s(
-		{ trig = "beg", snippetType = "autosnippet" },
-		fmta(
-			[[
+      {
+        i(0),
+      }
+    ),
+    { condition = tex.in_mathzone }
+  ),
+  s(
+    { trig = "beg", snippetType = "autosnippet" },
+    fmta(
+      [[
       \begin{<>}
         <>
       \end{<>}
       ]],
-			{
-				i(1),
-				i(2),
-				rep(1),
-			}
-		),
-		{ condition = tex.in_mathzone }
-	),
+      {
+        i(1),
+        i(2),
+        rep(1),
+      }
+    ),
+    { condition = tex.in_mathzone }
+  ),
 }
