@@ -4,15 +4,20 @@ local M = {
 }
 
 M.dependencies = {
-  "williamboman/mason-lspconfig.nvim",
+  {
+    "williamboman/mason-lspconfig.nvim",
+    opts = {
+      ensure_installed = { "lua_ls", "tinymist", "clangd" }
+    }
+  },
   {
     "williamboman/mason.nvim",
     cmd = "Mason",
     opts = {
       github = {
-        download_url_template = "https://gh.hitaoboy.top/github.com/%s/releases/download/%s/%s"
-      }
-    }
+        download_url_template = "https://gh.hitaoboy.top/https://github.com/%s/releases/download/%s/%s",
+      },
+    },
   },
   {
     "folke/lazydev.nvim",
@@ -22,13 +27,15 @@ M.dependencies = {
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       },
     },
-  }
+  },
 }
 
 function M.config()
   local lspconfig = require("lspconfig")
-  local servers = require("server_settings").servers
+  local lsps = require("server_settings").lsps
   local custom = require("custom")
+  local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
+  lsp_capabilities = require('blink.cmp').get_lsp_capabilities(lsp_capabilities)
 
   local lsp_keymap = function(bufnr)
     local set = function(keys, func, indesc)
@@ -44,7 +51,6 @@ function M.config()
     set("<leader>cn", vim.lsp.buf.rename, "[C]ode Item Re[N]ame")
     set("<leader>ct", vim.lsp.buf.type_definition, "[C]ode [T]ype definition")
     set("<leader>cd", vim.diagnostic.open_float, "[C]ode [D]iagnostic")
-    set("<leader>cf", vim.lsp.buf.format, "[Code] [F]ormat")
   end
 
   vim.api.nvim_create_autocmd("LspAttach", {
@@ -77,15 +83,15 @@ function M.config()
     end,
   })
 
-  for server, config in pairs(servers) do
-    config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
-    lspconfig[server].setup(config)
+  for lsp, config in pairs(lsps) do
+    config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
+    lspconfig[lsp].setup(config)
   end
 
-  vim.diagnostic.config {
+  vim.diagnostic.config({
     virtual_text = { spacing = 4 },
     float = {
-      border = custom.border,
+      border = "rounded",
       severity_sort = true,
       source = "if_many",
     },
@@ -98,7 +104,7 @@ function M.config()
         [vim.diagnostic.severity.INFO] = custom.icons.diagnostic.Information,
       },
     },
-  }
+  })
 end
 
 return M

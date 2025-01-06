@@ -14,9 +14,11 @@ M.keys = {
 }
 
 M.opts = {
+  preset = "helix",
   icons = {
     mappings = vim.g.have_nerd_font,
   },
+  win = { border = "rounded", title_pos = "center" }
 }
 
 return M

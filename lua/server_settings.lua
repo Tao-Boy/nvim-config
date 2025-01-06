@@ -1,17 +1,13 @@
 local M = {}
 
-M.servers = {
-  lua_ls = {
-    root_dir = require("lspconfig.util").root_pattern(".git", vim.fn.getcwd()),
-  },
+M.lsps = {
+  lua_ls = {},
   clangd = {},
   tinymist = {
     single_file_support = true,
     settings = {
-      exportPdf = "never",
-      fontPaths = "$./fonts/"
+      exportPdf = "onSave",
     },
-    formatterMode = "typstyle"
   },
 }
 

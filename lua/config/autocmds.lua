@@ -1,9 +1,3 @@
--- set no comment in next line
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "*",
-    command = "set formatoptions-=ro",
-})
-
 -- highlight yank
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),

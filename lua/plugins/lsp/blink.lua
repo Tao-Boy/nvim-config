@@ -2,9 +2,16 @@ return {
   "Saghen/blink.cmp",
   event = "User AfterLoad",
   version = "*",
-  dependencies = { 'L3MON4D3/LuaSnip', version = 'v2.*' },
+  dependencies = { 'L3MON4D3/LuaSnip', 'Kaiser-Yang/blink-cmp-dictionary' },
+  build = {
+    "wget https://gh.hitaoboy.top/https://github.com/Saghen/blink.cmp/releases/latest/download/x86_64-unknown-linux-gnu.so",
+    "mkdir -p target/release",
+    "mv x86_64-unknown-linux-gnu.so target/release/libblink_cmp_fuzzy.so"
+  },
   opts = {
-    keymap = { preset = 'default' },
+    keymap = {
+      preset = 'default',
+    },
     appearance = {
       use_nvim_cmp_as_default = true,
       nerd_font_variant = 'normal'
@@ -45,18 +52,35 @@ return {
       }
     },
     sources = {
-      default = { 'lsp', 'path', 'buffer', 'snippets', 'lazydev' },
+      default = { 'lsp', 'path', 'buffer', 'snippets', 'lazydev', 'dictionary' },
       providers = {
         lazydev = {
           name = "Development",
           module = "lazydev.integrations.blink",
-        }
+        },
+        dictionary = {
+          module = 'blink-cmp-dictionary',
+          name = 'Dict',
+          opts = {
+            get_command = {
+              'rg',
+              '--color=never',
+              '--no-line-number',
+              '--no-messages',
+              '--no-filename',
+              '--ignore-case',
+              '--',
+              '${prefix}',
+              vim.fn.expand('/usr/share/dict/words'),
+            },
+          }
+        },
       }
     },
     fuzzy = {
       prebuilt_binaries = {
         download = false,
-      }
+      },
     }
   }
 }

@@ -1,7 +1,6 @@
 return {
   "catppuccin/nvim",
-  priority = 100;
-  config = function()
+  init = function()
     require("catppuccin").setup({
       flavour = "macchiato",
       term_colors = true,
