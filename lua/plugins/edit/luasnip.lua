@@ -1,6 +1,6 @@
 local cmd = ""
 if jit.os:lower() == "windows" then
-	cmd = " make install_jsregexp CC=gcc.exe SHELL=git-bash.exe .SHELLFLAGS=-c"
+	cmd = " make install_jsregexp CC=gcc.exe SHELL=sh.exe .SHELLFLAGS=-c"
 else
 	cmd = "make install_jsregexp"
 end
