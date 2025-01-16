@@ -17,10 +17,14 @@ return {
 			formatters_by_ft = {
 				lua = { "stylua" },
 				typst = { "typstyle" },
+				cpp = { "clang_format" },
 			},
 			formatters = {
 				stylua = {
 					command = base_path .. "stylua",
+				},
+				clang_format = {
+					command = base_path .. "clang-format",
 				},
 				typstyle = {
 					command = base_path .. "typstyle",

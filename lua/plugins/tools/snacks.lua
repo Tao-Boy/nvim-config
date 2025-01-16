@@ -57,7 +57,14 @@ return {
 	},
 	opts = {
 		bigfile = {},
-		picker = {},
+		picker = {
+			layout = {
+				cycle = true,
+				preset = function()
+					return "default"
+				end,
+			},
+		},
 		dashboard = {
 			preset = {
 				header = [[
