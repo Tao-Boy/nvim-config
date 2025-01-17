@@ -25,7 +25,6 @@ require("lazy").setup({
 		{ import = "plugins.git" },
 		{ import = "plugins.edit" },
 		{ import = "plugins.tools" },
-		-- { import = "plugins.dap" },
 	},
 	defaults = {
 		lazy = true,
@@ -39,10 +38,10 @@ require("lazy").setup({
 	git = {
 		url_format = "https://gh.hitaoboy.top/https://github.com/%s.git",
 	},
-  ui = {
-    border = "rounded",
-    title = "Lazy Panel",
-  },
+	ui = {
+		border = "rounded",
+		title = "Lazy Panel",
+	},
 	performance = {
 		cache = { enabled = true },
 		reset_packpath = true,
@@ -52,10 +51,10 @@ require("lazy").setup({
 		rtp = {
 			reset = true,
 			disabled_plugins = {
-        "man",
-        "osc52",
-        "shada",
-        "tutor",
+				"man",
+				"osc52",
+				"shada",
+				"tutor",
 				"2html_plugin",
 				"tohtml",
 				"getscript",

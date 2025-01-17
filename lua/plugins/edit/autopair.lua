@@ -1,14 +1,11 @@
-local M = {
+return {
 	"altermo/ultimate-autopair.nvim",
 	event = { "InsertEnter", "CmdlineEnter" },
-}
-
-M.opts = {
-	tabout = {
-		enable = true,
-		map = "<C-k>",
-		hopout = true,
+	opts = {
+		tabout = {
+			enable = true,
+			map = "<C-k>",
+			hopout = true,
+		},
 	},
 }
-
-return M

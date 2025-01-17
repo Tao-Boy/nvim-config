@@ -17,7 +17,6 @@ keymap("v", ">", ">gv", opts)
 
 keymap("n", "n", "nzzzv", opts)
 
-
 -- Stay in indent mode
 keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)

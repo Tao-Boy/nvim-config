@@ -9,7 +9,7 @@ return {
 	opts = {
 		highlights = {
 			indicator_selected = {
-				fg = "#9B30FF",
+				fg = "#5ba8ff",
 			},
 		},
 	},

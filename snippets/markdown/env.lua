@@ -11,59 +11,59 @@ local tex = require("utils.markdown")
 --------------------------------------------------------------------------
 
 return {
-  s(
-    { trig = "mk", snippetType = "autosnippet" },
-    fmta(
-      [[
+	s(
+		{ trig = "mk", snippetType = "autosnippet" },
+		fmta(
+			[[
       $<>$ 
       ]],
-      {
-        i(1),
-      }
-    )
-  ),
-  s(
-    { trig = "dm", snippetType = "autosnippet" },
-    fmta(
-      [[
+			{
+				i(1),
+			}
+		)
+	),
+	s(
+		{ trig = "dm", snippetType = "autosnippet" },
+		fmta(
+			[[
             $$
             <>
             $$
         ]],
-      {
-        i(1),
-      }
-    )
-  ),
-  -- 开始一个环境
-  s(
-    { trig = "bal", snippetType = "autosnippet" },
-    fmta(
-      [[
+			{
+				i(1),
+			}
+		)
+	),
+	-- 开始一个环境
+	s(
+		{ trig = "bal", snippetType = "autosnippet" },
+		fmta(
+			[[
       \begin{align*}
         <>
       \end{align*}
       ]],
-      {
-        i(0),
-      }
-    ),
-    { condition = tex.in_mathzone }
-  ),
-  s(
-    { trig = "beg", snippetType = "autosnippet" },
-    fmta(
-      [[
+			{
+				i(0),
+			}
+		),
+		{ condition = tex.in_mathzone }
+	),
+	s(
+		{ trig = "beg", snippetType = "autosnippet" },
+		fmta(
+			[[
       \begin{<>}
         <>
       \end{<>}
       ]],
-      {
-        i(1),
-        i(2),
-        rep(1),
-      }
-    ),
-    { condition = tex.in_mathzone }
-  ),
+			{
+				i(1),
+				i(2),
+				rep(1),
+			}
+		),
+		{ condition = tex.in_mathzone }
+	),
 }

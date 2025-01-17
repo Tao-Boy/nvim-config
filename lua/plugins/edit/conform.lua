@@ -16,7 +16,6 @@ return {
 		require("conform").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
-				typst = { "typstyle" },
 				cpp = { "clang_format" },
 			},
 			formatters = {
@@ -25,9 +24,6 @@ return {
 				},
 				clang_format = {
 					command = base_path .. "clang-format",
-				},
-				typstyle = {
-					command = base_path .. "typstyle",
 				},
 			},
 		})
