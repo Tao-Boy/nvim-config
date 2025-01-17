@@ -30,10 +30,6 @@ return {
 	version = "*",
 	dependencies = {
 		"L3MON4D3/LuaSnip",
-		{
-			"Kaiser-Yang/blink-cmp-dictionary",
-			dependencies = { "nvim-lua/plenary.nvim" },
-		},
 	},
 	build = cmd,
 	opts = {
@@ -80,19 +76,11 @@ return {
 			},
 		},
 		sources = {
-			default = { "lsp", "path", "buffer", "snippets", "lazydev", "dictionary" },
+			default = { "lsp", "path", "buffer", "snippets", "lazydev" },
 			providers = {
 				lazydev = {
 					name = "Development",
 					module = "lazydev.integrations.blink",
-				},
-				dictionary = {
-					module = "blink-cmp-dictionary",
-					name = "Dict",
-					min_keyword_length = 3,
-					opts = {
-						dictionary_directories = { vim.fn.expand("/usr/share/dict/") },
-					},
 				},
 			},
 		},
