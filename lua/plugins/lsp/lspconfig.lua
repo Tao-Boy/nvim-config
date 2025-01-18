@@ -71,6 +71,7 @@ function M.config()
 		lspconfig[lsp].setup(config)
 	end
 
+
 	vim.diagnostic.config({
 		virtual_text = { spacing = 4 },
 		float = {

@@ -1,14 +1,7 @@
-local cmd = ""
-if jit.os:lower() == "windows" then
-	cmd = "make install_jsregexp CC=gcc.exe SHELL=C:/Program Files/Git/git-bash.exe .SHELLFLAGS=-c"
-else
-	cmd = "make install_jsregexp"
-end
-
 return {
 	"L3MON4D3/LuaSnip",
 	version = "v2.*",
-	build = cmd,
+	build = vim.g.os ~= "Windows" and "make install_jsregexp",
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
 	},
