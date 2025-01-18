@@ -38,7 +38,7 @@ return {
 						end
 					end,
 					separator = { left = "", right = "" },
-					padding = { left = 0, right = 0 },
+					padding = { left = 0, right = 1 },
 				},
 				{
 					"mode",
