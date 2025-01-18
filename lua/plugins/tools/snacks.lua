@@ -41,7 +41,7 @@ return {
 		{
 			"<leader>fw",
 			function()
-				Snacks.picker.grep_word()
+				Snacks.picker.grep_word({ live = true })
 			end,
 			desc = "Visual selection or word",
 			mode = { "n", "x" },
