@@ -1,13 +1,12 @@
-local cmd = ""
-if jit.os:lower() == "windows" then
-	cmd = ""
-else
-	cmd = "make install_jsregexp"
-end
 return {
 	"L3MON4D3/LuaSnip",
 	version = "v2.*",
-	build = cmd,
+	build = (function()
+		if vim.fn.has("win32") == 1 then
+			return
+		end
+		return "make install_jsregexp"
+	end)(),
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
 	},

@@ -9,7 +9,7 @@ if not vim.uv.fs_stat(lazypath) then
 		"git",
 		"clone",
 		"--filter=blob:none",
-		"https://gh.hitaoboy.top/https://github.com/folke/lazy.nvim.git",
+		"https://gh-proxy.hitaoboy.top/https://github.com/folke/lazy.nvim.git",
 		"--branch=stable",
 		lazypath,
 	})
@@ -21,9 +21,10 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	spec = {
 		{ import = "plugins.ui" },
-		{ import = "plugins.lsp" },
-		{ import = "plugins.git" },
 		{ import = "plugins.edit" },
+		{ import = "plugins.lsp" },
+		{ import = "plugins.lang" },
+		{ import = "plugins.git" },
 		{ import = "plugins.tools" },
 	},
 	defaults = {
@@ -36,10 +37,10 @@ require("lazy").setup({
 		notify = false,
 	},
 	git = {
-		url_format = "https://gh.hitaoboy.top/https://github.com/%s.git",
+		url_format = "https://gh-proxy.hitaoboy.top/https://github.com/%s.git",
 	},
 	ui = {
-		border = "rounded",
+		border = "single",
 		title = "Lazy Panel",
 	},
 	performance = {

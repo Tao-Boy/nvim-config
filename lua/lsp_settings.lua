@@ -8,7 +8,6 @@ M.lsps = {
 		settings = {
 			exportPdf = "never",
 			formatterMode = "typstyle",
-			semanticTokens = "disable",
 		},
 	},
 }

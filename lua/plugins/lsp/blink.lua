@@ -1,78 +1,77 @@
-local cmd = ""
-local base_url = "https://gh.hitaoboy.top/https://github.com/Saghen/blink.cmp/releases/latest/download/"
-if jit.os:lower() == "linux" then
-	local os = "x86_64-unknown-linux-gnu.so"
-	local lib = ".so"
-	cmd = "mkdir -p target/release && cd target/release"
-		.. " && wget "
-		.. base_url
-		.. os
-		.. " && mv "
-		.. os
-		.. " libblink_cmp_fuzzy"
-		.. lib
-elseif jit.os:lower() == "windows" then
-	local os = "x86_64-pc-windows-msvc.dll"
-	local lib = ".dll"
-	cmd = "mkdir target\\release & cd target\\release"
-		.. " & wget "
-		.. base_url
-		.. os
-		.. " & ren "
-		.. os
-		.. " libblink_cmp_fuzzy"
-		.. lib
-end
+-- local cmd = ""
+-- local base_url = "https://gh-proxy.hitaoboy.top/https://github.com/Saghen/blink.cmp/releases/latest/download/"
+-- if jit.os:lower() == "linux" then
+-- 	local os = "x86_64-unknown-linux-gnu.so"
+-- 	local lib = ".so"
+-- 	cmd = "mkdir -p target/release && cd target/release"
+-- 		.. " && wget "
+-- 		.. base_url
+-- 		.. os
+-- 		.. " && mv "
+-- 		.. os
+-- 		.. " libblink_cmp_fuzzy"
+-- 		.. lib
+-- elseif jit.os:lower() == "windows" then
+-- 	local os = "x86_64-pc-windows-msvc.dll"
+-- 	local lib = ".dll"
+-- 	cmd = "mkdir target\\release & cd target\\release"
+-- 		.. " & wget "
+-- 		.. base_url
+-- 		.. os
+-- 		.. " & ren "
+-- 		.. os
+-- 		.. " libblink_cmp_fuzzy"
+-- 		.. lib
+-- end
 
 return {
 	"Saghen/blink.cmp",
 	event = "User AfterLoad",
-	version = "*",
+	version = "1.*",
+	-- build = cmd,
 	dependencies = {
 		"L3MON4D3/LuaSnip",
 	},
-	build = cmd,
 	opts = {
 		keymap = {
 			preset = "default",
 		},
 		appearance = {
 			use_nvim_cmp_as_default = true,
-			nerd_font_variant = "normal",
+			nerd_font_variant = "mono",
 		},
 		snippets = {
-			expand = function(snippet)
-				require("luasnip").lsp_expand(snippet)
-			end,
-			active = function(filter)
-				if filter and filter.direction then
-					return require("luasnip").jumpable(filter.direction)
-				end
-				return require("luasnip").in_snippet()
-			end,
-			jump = function(direction)
-				require("luasnip").jump(direction)
-			end,
+			preset = "luasnip",
 		},
 		completion = {
 			menu = {
-				border = "rounded",
+				border = "single",
+				winhighlight = "Normal:None,FloatBorder:None,CursorLine:BlinkCmpMenuSelection,Search:None",
+				scrollbar = false,
 				draw = {
 					treesitter = { "lsp" },
 				},
 			},
+			list = {
+				selection = { preselect = true, auto_insert = false },
+			},
 			documentation = {
 				auto_show = true,
 				window = {
-					border = "rounded",
+					border = "single",
 					scrollbar = false,
+				},
+			},
+			accept = {
+				auto_brackets = {
+					enabled = true,
 				},
 			},
 		},
 		signature = {
 			enabled = true,
 			window = {
-				border = "rounded",
+				border = "single",
 			},
 		},
 		sources = {
@@ -84,9 +83,11 @@ return {
 				},
 			},
 		},
+
 		fuzzy = {
+			implementation = "rust",
 			prebuilt_binaries = {
-				download = false,
+				ignore_version_mismatch = false,
 			},
 		},
 	},

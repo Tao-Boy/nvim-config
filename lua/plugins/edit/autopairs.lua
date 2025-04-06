@@ -4,7 +4,7 @@ return {
 	opts = {
 		tabout = {
 			enable = true,
-			map = "<C-k>",
+			map = "<C-l>",
 			hopout = true,
 		},
 	},

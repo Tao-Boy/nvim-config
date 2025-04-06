@@ -17,13 +17,17 @@ return {
 			formatters_by_ft = {
 				lua = { "stylua" },
 				cpp = { "clang_format" },
+				nix = { "alejandra" },
 			},
 			formatters = {
 				stylua = {
-					command = base_path .. "stylua",
+					command = "stylua",
 				},
 				clang_format = {
-					command = base_path .. "clang-format",
+					command = "clang-format",
+				},
+				alejandra = {
+					command = base_path .. "alejandra",
 				},
 			},
 		})
