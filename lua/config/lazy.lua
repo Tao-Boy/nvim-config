@@ -22,7 +22,9 @@ require("lazy").setup({
 	default = { lazy = true },
 	spec = { import = "plugins" },
 	ui = { border = "rounded", backdrop = 100 },
-
+    git = {
+		url_format = "https://gh.927223.xyz/github.com/%s.git",
+	},
 	performance = {
 		cache = { enabled = true },
 		reset_packpath = true,
@@ -59,3 +61,4 @@ require("lazy").setup({
 		},
 	},
 })
+
