@@ -7,7 +7,7 @@ return {
   config = function()
     local parsers = require "nvim-treesitter.parsers".get_parser_configs()
     for _, p in pairs(parsers) do
-      p.install_info.url = p.install_info.url:gsub("github.com", "gh-proxy.hitaoboy.top/github.com")
+      p.install_info.url = p.install_info.url:gsub("github.com", "gh.927223.xyz/github.com")
     end
     require("nvim-treesitter.configs").setup({
       auto_install = false,
@@ -31,3 +31,4 @@ return {
     })
   end,
 }
+
