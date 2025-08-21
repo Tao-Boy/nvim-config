@@ -5,7 +5,6 @@ local fmta = require("luasnip.extras.fmt").fmta
 local rep = require("luasnip.extras").rep
 local line_begin = require("luasnip.extras.expand_conditions").line_begin
 local tex = require("utils.latex")
-local toggle_rime = require("utils.rime").toggle_rime
 local events = require("luasnip.util.events")
 
 --------------------------------------------------------------------------
@@ -28,12 +27,12 @@ ls.add_snippets("tex", {
 				[1] = {
 					[events.enter] = function()
 						if vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 					[events.leave] = function()
 						if not vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 				},
@@ -48,9 +47,11 @@ ls.add_snippets("tex", {
       \[
         <>
       \]
+      <>
       ]],
 			{
 				i(1),
+				i(0),
 			}
 		),
 		{
@@ -58,12 +59,12 @@ ls.add_snippets("tex", {
 				[1] = {
 					[events.enter] = function()
 						if vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 					[events.leave] = function()
 						if not vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 				},
@@ -92,12 +93,12 @@ ls.add_snippets("tex", {
 				[1] = {
 					[events.enter] = function()
 						if vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 					[events.leave] = function()
 						if not vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 				},
@@ -143,12 +144,12 @@ ls.add_snippets("tex", {
 				[1] = {
 					[events.enter] = function()
 						if vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 					[events.leave] = function()
 						if not vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 				},
@@ -174,12 +175,12 @@ ls.add_snippets("tex", {
 				[1] = {
 					[events.enter] = function()
 						if vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 					[events.leave] = function()
 						if not vim.g.rime_enabled then
-							toggle_rime()
+							vim.cmd("ToggleRime")
 						end
 					end,
 				},

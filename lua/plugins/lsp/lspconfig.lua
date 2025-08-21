@@ -1,5 +1,4 @@
 local custom = require("custom")
-local toggle_rime = require("utils.rime").toggle_rime
 local config = function()
 	require("utils.lsp_settings").init()
 
@@ -50,10 +49,6 @@ local config = function()
 					vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
 				end
 			end
-
-			vim.keymap.set("i", "<C-k>", function()
-				toggle_rime()
-			end, { desc = "Toggle Rime", buffer = args.buf })
 		end,
 	})
 
