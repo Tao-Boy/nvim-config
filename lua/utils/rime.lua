@@ -44,20 +44,20 @@ local function toggle_rime(client)
 	map_punc(mapped_punc)
 end
 
-vim.api.nvim_create_user_command("ToggleRime", function(_)
-	local bufnr = vim.api.nvim_get_current_buf()
-	local client = vim.lsp.get_clients({ bufnr = bufnr, name = "rime_ls" })
-	if #client > 0 then
-		toggle_rime(client[1])
-	end
-end, { nargs = "?", desc = "Toggle Rime" })
+-- vim.api.nvim_create_user_command("ToggleRime", function(_)
+-- 	local bufnr = vim.api.nvim_get_current_buf()
+-- 	local client = vim.lsp.get_clients({ bufnr = bufnr, name = "rime_ls" })
+-- 	if #client > 0 then
+-- 		toggle_rime(client[1])
+-- 	end
+-- end, { nargs = "?", desc = "Toggle Rime" })
 
 local function rime_on_attach(client, _)
 	vim.keymap.set({ "n", "i" }, "<c-space>", function()
 		toggle_rime(client)
 	end)
-	vim.keymap.set("i", "<C-k>", ",,")
-	vim.keymap.set("i", "<C-l>", ";;")
+	-- vim.keymap.set("i", "<C-k>", ",,")
+	-- vim.keymap.set("i", "<C-l>", ";;")
 end
 
 return {

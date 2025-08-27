@@ -19,42 +19,42 @@ end
 
 return {
 	s({ trig = "sin", snippetType = "autosnippet", hidden = true }, {
-		t("\\sin"),
+		t("\\sin "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "asin", snippetType = "autosnippet", hidden = true }, {
-		t("\\arcsin"),
+		t("\\arcsin "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "cos", snippetType = "autosnippet", hidden = true }, {
-		t("\\cos"),
+		t("\\cos "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "acos", snippetType = "autosnippet", hidden = true }, {
-		t("\\arccos"),
+		t("\\arccos "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "tan", snippetType = "autosnippet", hidden = true }, {
-		t("\\tan"),
+		t("\\tan "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "atan", snippetType = "autosnippet", hidden = true }, {
-		t("\\arctan"),
+		t("\\arctan "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "cot", snippetType = "autosnippet", hidden = true }, {
-		t("\\cot"),
+		t("\\cot "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "acot", snippetType = "autosnippet", hidden = true }, {
-		t("\\arccot"),
+		t("\\arccot "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "csc", snippetType = "autosnippet", hidden = true }, {
-		t("\\csc"),
+		t("\\csc "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "acsc", snippetType = "autosnippet", hidden = true }, {
-		t("\\arccsc"),
+		t("\\arccsc "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "asec", snippetType = "autosnippet", hidden = true }, {
-		t("\\arcsec"),
+		t("\\arcsec "),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "log", snippetType = "autosnippet", hidden = true }, {
-		t("\\log"),
+		t("\\log "),
 	}, { condition = tex.in_mathzone }),
-	s({ trig = "ln", snippetType = "autosnippet", hidden = true }, {
+	s({ trig = "ln ", snippetType = "autosnippet", hidden = true }, {
 		t("\\ln"),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "exp", snippetType = "autosnippet", hidden = true }, {

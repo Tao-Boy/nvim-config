@@ -13,62 +13,60 @@ local events = require("luasnip.util.events")
 
 ls.add_snippets("tex", {
 	s(
-		{ trig = ",,", snippetType = "autosnippet", hidden = true },
+		{ trig = "ii", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
-      \(<>\)
+      \( <> \)
       ]],
 			{
 				i(1),
 			}
 		),
 		{
-			callbacks = {
-				[1] = {
-					[events.enter] = function()
-						if vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-					[events.leave] = function()
-						if not vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-				},
-			},
+			-- callbacks = {
+			-- 	[1] = {
+			-- 		[events.enter] = function()
+			-- 			if vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 		[events.leave] = function()
+			-- 			if not vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 	},
+			-- },
 			{ condition = tex.in_text },
 		}
 	),
 	s(
-		{ trig = ";;", snippetType = "autosnippet", hidden = true },
+		{ trig = "dd", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
       \[
         <>
       \]
-      <>
       ]],
 			{
 				i(1),
-				i(0),
 			}
 		),
 		{
-			callbacks = {
-				[1] = {
-					[events.enter] = function()
-						if vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-					[events.leave] = function()
-						if not vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-				},
-			},
+			-- callbacks = {
+			-- 	[1] = {
+			-- 		[events.enter] = function()
+			-- 			if vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 		[events.leave] = function()
+			-- 			if not vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 	},
+			-- },
 			{ condition = tex.in_text },
 		}
 	),
@@ -89,20 +87,20 @@ ls.add_snippets("tex", {
 			}
 		),
 		{
-			callbacks = {
-				[1] = {
-					[events.enter] = function()
-						if vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-					[events.leave] = function()
-						if not vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-				},
-			},
+			-- callbacks = {
+			-- 	[1] = {
+			-- 		[events.enter] = function()
+			-- 			if vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 		[events.leave] = function()
+			-- 			if not vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 	},
+			-- },
 			condition = line_begin,
 		}
 	),
@@ -140,20 +138,20 @@ ls.add_snippets("tex", {
 			}
 		),
 		{
-			callbacks = {
-				[1] = {
-					[events.enter] = function()
-						if vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-					[events.leave] = function()
-						if not vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-				},
-			},
+			-- callbacks = {
+			-- 	[1] = {
+			-- 		[events.enter] = function()
+			-- 			if vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 		[events.leave] = function()
+			-- 			if not vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 	},
+			-- },
 			condition = tex.in_text * line_begin,
 		}
 	),
@@ -171,20 +169,20 @@ ls.add_snippets("tex", {
 			}
 		),
 		{
-			callbacks = {
-				[1] = {
-					[events.enter] = function()
-						if vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-					[events.leave] = function()
-						if not vim.g.rime_enabled then
-							vim.cmd("ToggleRime")
-						end
-					end,
-				},
-			},
+			-- callbacks = {
+			-- 	[1] = {
+			-- 		[events.enter] = function()
+			-- 			if vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 		[events.leave] = function()
+			-- 			if not vim.g.rime_enabled then
+			-- 				vim.cmd("ToggleRime")
+			-- 			end
+			-- 		end,
+			-- 	},
+			-- },
 			condition = tex.in_mathzone,
 		}
 	),

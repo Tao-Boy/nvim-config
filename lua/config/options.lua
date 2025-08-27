@@ -1,5 +1,4 @@
-vim.opt.background = "dark"
-vim.cmd([[colorscheme gruvbox]])
+vim.cmd.colorscheme("gruvbox")
 
 vim.opt.viewoptions = "folds,cursor"
 vim.opt.jumpoptions = "stack"
@@ -67,6 +66,7 @@ vim.opt.shadafile = "NONE"
 vim.opt.iskeyword = "_,49-57,A-Z,a-z"
 
 vim.opt.pumblend = 20
+vim.opt.fixeol = false
 
 vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
 vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
