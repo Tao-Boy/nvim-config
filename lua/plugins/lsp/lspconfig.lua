@@ -42,7 +42,7 @@ local config = function()
 			local client = vim.lsp.get_client_by_id(args.data.client_id)
 			if client then
 				if client.server_capabilities.inlayHintProvider then
-					vim.lsp.inlay_hint.enable(true)
+					vim.lsp.inlay_hint.enable(false)
 				end
 				if client:supports_method("textDocument/foldingRange") then
 					local win = vim.api.nvim_get_current_win()

@@ -64,7 +64,7 @@ return {
 	rime_ls = {
 		name = "rime_ls",
 		cmd = { "rime_ls" },
-		filetypes = { "tex" },
+		filetypes = { "tex", "typ" },
 		init_options = {
 			enabled = vim.g.rime_enabled,
 			shared_data_dir = nil,

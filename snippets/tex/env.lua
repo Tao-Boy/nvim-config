@@ -22,23 +22,21 @@ ls.add_snippets("tex", {
 				i(1),
 			}
 		),
-		{
-			-- callbacks = {
-			-- 	[1] = {
-			-- 		[events.enter] = function()
-			-- 			if vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 		[events.leave] = function()
-			-- 			if not vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 	},
-			-- },
-			{ condition = tex.in_text },
-		}
+		-- callbacks = {
+		-- 	[1] = {
+		-- 		[events.enter] = function()
+		-- 			if vim.g.rime_enabled then
+		-- 				vim.cmd("ToggleRime")
+		-- 			end
+		-- 		end,
+		-- 		[events.leave] = function()
+		-- 			if not vim.g.rime_enabled then
+		-- 				vim.cmd("ToggleRime")
+		-- 			end
+		-- 		end,
+		-- 	},
+		-- },
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "dd", snippetType = "autosnippet", hidden = true },
@@ -52,23 +50,21 @@ ls.add_snippets("tex", {
 				i(1),
 			}
 		),
-		{
-			-- callbacks = {
-			-- 	[1] = {
-			-- 		[events.enter] = function()
-			-- 			if vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 		[events.leave] = function()
-			-- 			if not vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 	},
-			-- },
-			{ condition = tex.in_text },
-		}
+		-- callbacks = {
+		-- 	[1] = {
+		-- 		[events.enter] = function()
+		-- 			if vim.g.rime_enabled then
+		-- 				vim.cmd("ToggleRime")
+		-- 			end
+		-- 		end,
+		-- 		[events.leave] = function()
+		-- 			if not vim.g.rime_enabled then
+		-- 				vim.cmd("ToggleRime")
+		-- 			end
+		-- 		end,
+		-- 	},
+		-- },
+		{ condition = tex.in_text }
 	),
 	-- 开始一个环境
 	s(

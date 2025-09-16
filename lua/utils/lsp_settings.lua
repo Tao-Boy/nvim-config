@@ -16,6 +16,13 @@ local lsp_config = {
 		},
 	},
 	texlab = {},
+	tinymist = {
+		settings = {
+			formatterMode = "typstyle",
+			exportPdf = "onSave",
+			semanticTokens = "disable",
+		},
+	},
 	pyright = {},
 }
 

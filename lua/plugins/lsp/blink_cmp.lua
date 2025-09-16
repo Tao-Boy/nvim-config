@@ -61,6 +61,7 @@ return {
 		},
 		completion = {
 			menu = {
+				max_height = 8,
 				border = "rounded",
 				winhighlight = "Normal:BlinkCmpMenu,FloatBorder:BlinkCmpMenuBorder,CursorLine:BlinkCmpMenuSelection,Search:None",
 				scrollbar = false,
@@ -102,7 +103,7 @@ return {
 			},
 		},
 		sources = {
-			default = { "lsp", "path", "snippets", "lazydev" },
+			default = { "lsp", "path", "lazydev" },
 			providers = {
 				lazydev = {
 					name = "Development",
