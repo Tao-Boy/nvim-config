@@ -1,34 +1,33 @@
--- local cmd = ""
--- local base_url = "https://gh-proxy.hitaoboy.top/https://github.com/Saghen/blink.cmp/releases/latest/download/"
--- if jit.os:lower() == "linux" then
--- 	local os = "x86_64-unknown-linux-gnu.so"
--- 	local lib = ".so"
--- 	cmd = "mkdir -p target/release && cd target/release"
--- 		.. " && wget "
--- 		.. base_url
--- 		.. os
--- 		.. " && mv "
--- 		.. os
--- 		.. " libblink_cmp_fuzzy"
--- 		.. lib
--- elseif jit.os:lower() == "windows" then
--- 	local os = "x86_64-pc-windows-msvc.dll"
--- 	local lib = ".dll"
--- 	cmd = "mkdir target\\release & cd target\\release"
--- 		.. " & wget "
--- 		.. base_url
--- 		.. os
--- 		.. " & ren "
--- 		.. os
--- 		.. " libblink_cmp_fuzzy"
--- 		.. lib
--- end
+local cmd = ""
+local base_url = "https://" .. vim.g.gh_proxy .. "github.com/Saghen/blink.cmp/releases/latest/download/"
+if jit.os:lower() == "linux" then
+	local os = "x86_64-unknown-linux-gnu.so"
+	local lib = ".so"
+	cmd = "mkdir -p target/release && cd target/release"
+		.. " && curl -LO "
+		.. base_url
+		.. os
+		.. " && mv "
+		.. os
+		.. " libblink_cmp_fuzzy"
+		.. lib
+elseif jit.os:lower() == "windows" then
+	local os = "x86_64-pc-windows-msvc.dll"
+	local lib = ".dll"
+	cmd = "mkdir target\\release & cd target\\release"
+		.. " & curl -LO "
+		.. base_url
+		.. os
+		.. " & ren "
+		.. os
+		.. " libblink_cmp_fuzzy"
+		.. lib
+end
 
 return {
 	"saghen/blink.cmp",
 	event = "User AfterLoad",
-	version = "1.*",
-	-- build = cmd,
+	build = cmd,
 	dependencies = {
 		"L3MON4D3/LuaSnip",
 	},
@@ -127,7 +126,7 @@ return {
 		fuzzy = {
 			implementation = "prefer_rust_with_warning",
 			prebuilt_binaries = {
-				download = true,
+				download = false,
 				ignore_version_mismatch = false,
 			},
 		},
