@@ -1,7 +1,7 @@
 vim.loader.enable()
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.gh_proxy = "gh-proxy.com/"
+vim.g.gh_proxy = "proxy.pipers.cn/"
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
