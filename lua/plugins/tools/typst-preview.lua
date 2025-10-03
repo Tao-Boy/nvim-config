@@ -4,7 +4,7 @@ return {
 	opts = {
 		debug = false,
     -- invert_colors = "auto",
-    -- port = 8080,
+    port = 8080,
 		dependencies_bin = {
 			["tinymist"] = "tinymist",
 			["websocat"] = "websocat",
