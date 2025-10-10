@@ -70,6 +70,12 @@ return {
 				},
 			},
 		},
+		-- {
+		-- 	"mason-org/mason-lspconfig.nvim",
+		-- 	opts = {
+		-- 		automatic_enable = false,
+		-- 	},
+		-- },
 	},
 	event = "User AfterLoad",
 	config = config,

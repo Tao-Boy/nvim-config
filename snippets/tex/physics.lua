@@ -24,9 +24,9 @@ return {
 	),
 	s(
 		{ trig = "bk", snippetType = "autosnippet", hidden = true },
-		c(2, {
-			sn(nil, { t("\\braket{"), i(2), t("}{"), i(2), t("}") }),
-			sn(nil, { t("\\mel{"), i(2), t("}{"), i(2), t("}{"), i(3), t("}") }),
+		c(1, {
+			sn(nil, { t("\\braket{"), i(1), t("}{"), i(2), t("}") }),
+			sn(nil, { t("\\mel{"), i(1), t("}{"), i(2), t("}{"), i(3), t("}") }),
 		}),
 		{ condition = tex.in_mathzone }
 	),

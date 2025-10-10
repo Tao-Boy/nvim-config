@@ -1,5 +1,3 @@
-vim.cmd.colorscheme("gruvbox")
-
 vim.opt.viewoptions = "folds,cursor"
 vim.opt.jumpoptions = "stack"
 
@@ -60,7 +58,7 @@ vim.opt.writebackup = false
 vim.opt.scrolloff = 0
 vim.opt.sidescrolloff = 8
 vim.opt.title = false
-vim.lsp.log.set_level(vim.log.levels.OFF)
+-- vim.lsp.log.set_level(vim.log.levels.OFF)
 vim.opt.shadafile = "NONE"
 
 vim.opt.iskeyword = "_,49-57,A-Z,a-z"

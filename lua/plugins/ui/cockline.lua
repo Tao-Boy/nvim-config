@@ -12,7 +12,7 @@ return {
 			default_hl = {
 				bg = function(buffer)
 					if buffer.is_focused then
-						return get_hex("GruvBoxBlue", "fg")
+						return get_hex("RainbowBlue", "fg")
 					else
 						return "none"
 					end
