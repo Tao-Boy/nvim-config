@@ -25,6 +25,7 @@ local lsp_config = {
 		},
 	},
 	pylsp = {},
+	rust_analyzer = {},
 }
 
 local config = vim.tbl_extend("force", lsp_config, rime_ls)
