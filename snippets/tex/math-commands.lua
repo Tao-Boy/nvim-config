@@ -54,7 +54,7 @@ return {
 	s({ trig = "log", snippetType = "autosnippet", hidden = true }, {
 		t("\\log "),
 	}, { condition = tex.in_mathzone }),
-	s({ trig = "ln ", snippetType = "autosnippet", hidden = true }, {
+	s({ trig = "ln", snippetType = "autosnippet", hidden = true }, {
 		t("\\ln"),
 	}, { condition = tex.in_mathzone }),
 	s({ trig = "exp", snippetType = "autosnippet", hidden = true }, {
@@ -277,7 +277,7 @@ return {
 	),
 	s(
 		{ trig = "lrm", wordTrig = false, snippetType = "autosnippet", hidden = true },
-		fmta([[\left[ <> \right]], {
+		fmta([[ \left[ <> \right] ]], {
 			i(1),
 		}),
 		{ condition = tex.in_mathzone }

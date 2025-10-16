@@ -13,7 +13,7 @@ local events = require("luasnip.util.events")
 
 ls.add_snippets("tex", {
 	s(
-		{ trig = "ii", snippetType = "autosnippet", hidden = true },
+		{ trig = ",,", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
       \( <> \)
@@ -39,7 +39,7 @@ ls.add_snippets("tex", {
 		{ condition = tex.in_text }
 	),
 	s(
-		{ trig = "dd", snippetType = "autosnippet", hidden = true },
+		{ trig = ";;", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
       \[
