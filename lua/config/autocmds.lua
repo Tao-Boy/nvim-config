@@ -1,5 +1,6 @@
 local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
+vim.opt.updatetime = 500
 
 autocmd("User", {
 	pattern = "VeryLazy",
@@ -33,13 +34,10 @@ autocmd("FileType", {
 	command = "set formatoptions-=ro",
 })
 
--- for test
--- vim.api.nvim_create_autocmd("CursorMovedI", {
--- 	pattern = "*.typ",
--- 	callback = function()
--- 		local info = vim.inspect_pos()
--- 		for _, ts in ipairs(info.treesitter) do
--- 			print(ts.capture)
--- 		end
--- 	end,
--- })
+vim.api.nvim_create_autocmd("CursorHold", {
+	pattern = { "*.tex", "*.typ" },
+	callback = function()
+		require("snacks.image")
+		Snacks.image.hover()
+	end,
+})

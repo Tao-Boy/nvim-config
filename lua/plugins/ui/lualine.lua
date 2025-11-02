@@ -1,10 +1,3 @@
-local function rime_status()
-	if vim.g.rime_enabled then
-		return "ㄓ"
-	else
-		return ""
-	end
-end
 local opts = {
 	options = {
 		icons_enabled = true,
@@ -53,7 +46,7 @@ local opts = {
 			"diagnostics",
 		},
 		lualine_x = {
-			{ rime_status },
+			{ "datetime", style = " %H:%M" },
 		},
 		lualine_y = {
 			{
@@ -84,11 +77,11 @@ return {
 	"nvim-lualine/lualine.nvim",
 	event = "User AfterLoad",
 	dependencies = {
-		"nvim-tree/nvim-web-devicons",
+		{ "nvim-tree/nvim-web-devicons" },
 	},
 	config = function()
 		local auto = require("lualine.themes.auto")
-		local lualine_modes = { "insert", "normal", "visual", "command", "replace", "inactive", "terminal" }
+		local lualine_modes = { "insert", "normal", "visual", "command", "replace", "inactive", "terminal", "WinBar" }
 		for _, field in ipairs(lualine_modes) do
 			if auto[field] and auto[field].c then
 				auto[field].c.bg = "NONE"

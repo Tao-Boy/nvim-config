@@ -1,5 +1,4 @@
 local M = {}
-local rime_ls = require("utils.rime")
 local base_path = vim.fn.stdpath("data") .. "/mason/bin:"
 local lsp_config = {
 	lua_ls = {
@@ -16,6 +15,7 @@ local lsp_config = {
 		},
 	},
 	texlab = {},
+	pyright = {},
 	clangd = {},
 	tinymist = {
 		settings = {
@@ -24,15 +24,12 @@ local lsp_config = {
 			semanticTokens = "disable",
 		},
 	},
-	pylsp = {},
 	rust_analyzer = {},
 }
 
-local config = vim.tbl_extend("force", lsp_config, rime_ls)
-
 M.init = function()
 	vim.env.PATH = base_path .. vim.env.PATH
-	for k, v in pairs(config) do
+	for k, v in pairs(lsp_config) do
 		vim.lsp.config[k] = v
 		vim.lsp.enable(k)
 	end

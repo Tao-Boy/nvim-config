@@ -66,6 +66,9 @@ vim.opt.iskeyword = "_,49-57,A-Z,a-z"
 vim.opt.pumblend = 20
 vim.opt.fixeol = false
 
+vim.opt.wrap = true
+vim.opt.linebreak = true
+
 vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
 vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
 vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })

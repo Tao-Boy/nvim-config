@@ -30,6 +30,7 @@ return {
 	build = cmd,
 	dependencies = {
 		"L3MON4D3/LuaSnip",
+		{ "Kaiser-Yang/blink-cmp-dictionary", dependencies = { "nvim-lua/plenary.nvim" } },
 	},
 	opts = {
 		keymap = {
@@ -40,16 +41,6 @@ return {
 			["<c-u>"] = { "cancel", "fallback" },
 			["<c-n>"] = { "select_next", "fallback" },
 			["<c-p>"] = { "select_prev", "fallback" },
-			["<space>"] = {
-				function(cmp)
-					if not vim.g.rime_enabled then
-						return false
-					else
-						return cmp.accept()
-					end
-				end,
-				"fallback",
-			},
 		},
 		appearance = {
 			use_nvim_cmp_as_default = false,
@@ -76,6 +67,24 @@ return {
 								return require("colorful-menu").blink_components_highlight(ctx)
 							end,
 						},
+						kind_icon = {
+							ellipsis = false,
+							text = function(ctx)
+								if ctx.item.kind_name == "llm" then
+									return " "
+								else
+									return ctx.kind_icon
+								end
+							end,
+
+							highlight = function(ctx)
+								if ctx.item.kind_name == "llm" then
+									return "BlinkCmpKindSnippet"
+								else
+									return ctx.kind_hl
+								end
+							end,
+						},
 					},
 				},
 			},
@@ -94,6 +103,10 @@ return {
 					enabled = true,
 				},
 			},
+			trigger = {
+				prefetch_on_insert = false,
+				show_on_blocked_trigger_characters = {},
+			},
 		},
 		signature = {
 			enabled = true,
@@ -102,8 +115,18 @@ return {
 			},
 		},
 		sources = {
-			default = { "lsp", "path", "lazydev", "buffer" },
+			default = { "lsp", "path", "lazydev", "buffer", "llm" },
+			per_filetype = {
+				llm = { inherit_defaults = false }, -- enbale: "llm_cmds"
+			},
 			providers = {
+				llm = {
+					name = "LLM",
+					module = "llm.common.completion.frontends.blink",
+					timeout_ms = 10000,
+					score_offset = 100,
+					async = true,
+				},
 				lazydev = {
 					name = "Development",
 					module = "lazydev.integrations.blink",

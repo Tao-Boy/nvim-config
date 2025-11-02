@@ -90,5 +90,22 @@ return {
 		notifier = {},
 		quickfile = {},
 		scroll = {},
+		image = {
+			enabled = false,
+			math = {
+				latex = {
+					packages = { "amsmath", "amsfonts", "amssymb", "physics" },
+					tpl = [[
+        \documentclass[preview,border=0pt,varwidth,9pt]{standalone}
+        \usepackage{${packages}}
+        \newcommand*{\dif}{\mathop{}\!\mathrm{d}}
+        \begin{document}
+        ${header}
+        {\color{white}
+        ${content}}
+        \end{document}]],
+				},
+			},
+		},
 	},
 }
