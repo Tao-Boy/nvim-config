@@ -1,6 +1,6 @@
 return {
 	"folke/noice.nvim",
-	event = "User AfterLoad",
+	event = "CmdlineEnter",
 	dependencies = {
 		"MunifTanjim/nui.nvim",
 	},

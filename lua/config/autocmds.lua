@@ -27,17 +27,3 @@ autocmd("TextYankPost", {
 		vim.highlight.on_yank()
 	end,
 })
-
-autocmd("FileType", {
-	group = augroup("filetype-set", { clear = true }),
-	pattern = "*",
-	command = "set formatoptions-=ro",
-})
-
-vim.api.nvim_create_autocmd("CursorHold", {
-	pattern = { "*.tex", "*.typ" },
-	callback = function()
-		require("snacks.image")
-		Snacks.image.hover()
-	end,
-})

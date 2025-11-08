@@ -14,7 +14,7 @@ vim.opt.ruler = false
 vim.opt.number = true
 vim.opt.relativenumber = false
 
-vim.opt.cursorline = false
+vim.opt.cursorline = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.termguicolors = true
@@ -45,7 +45,7 @@ vim.opt.showmode = false
 vim.opt.backup = false
 vim.opt.clipboard = "unnamedplus"
 
-vim.opt.cmdheight = 1
+vim.opt.cmdheight = 0
 vim.opt.conceallevel = 0
 vim.opt.fileencoding = "utf-8"
 
@@ -58,10 +58,8 @@ vim.opt.writebackup = false
 vim.opt.scrolloff = 0
 vim.opt.sidescrolloff = 8
 vim.opt.title = false
--- vim.lsp.log.set_level(vim.log.levels.OFF)
+vim.lsp.log.set_level(vim.log.levels.OFF)
 vim.opt.shadafile = "NONE"
-
-vim.opt.iskeyword = "_,49-57,A-Z,a-z"
 
 vim.opt.pumblend = 20
 vim.opt.fixeol = false

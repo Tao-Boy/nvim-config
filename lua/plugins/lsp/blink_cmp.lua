@@ -26,11 +26,15 @@ end
 
 return {
 	"saghen/blink.cmp",
-	event = "User AfterLoad",
+	event = { "InsertEnter", "CmdlineEnter", "User AfterLoad" },
 	build = cmd,
 	dependencies = {
 		"L3MON4D3/LuaSnip",
-		{ "Kaiser-Yang/blink-cmp-dictionary", dependencies = { "nvim-lua/plenary.nvim" } },
+		{
+			"Kaiser-Yang/blink-cmp-dictionary",
+			dependencies = { "nvim-lua/plenary.nvim" },
+			{ "giuxtaposition/blink-cmp-copilot" },
+		},
 	},
 	opts = {
 		keymap = {
@@ -52,8 +56,8 @@ return {
 		completion = {
 			menu = {
 				max_height = 8,
-				border = "rounded",
-				winhighlight = "Normal:BlinkCmpMenu,FloatBorder:BlinkCmpMenuBorder,CursorLine:BlinkCmpMenuSelection,Search:None",
+				border = "single",
+				winhighlight = "Normal:None,FloatBorder:None,CursorLine:BlinkCmpMenuSelection,Search:None",
 				scrollbar = false,
 				draw = {
 					treesitter = { "lsp" },
@@ -67,24 +71,6 @@ return {
 								return require("colorful-menu").blink_components_highlight(ctx)
 							end,
 						},
-						kind_icon = {
-							ellipsis = false,
-							text = function(ctx)
-								if ctx.item.kind_name == "llm" then
-									return " "
-								else
-									return ctx.kind_icon
-								end
-							end,
-
-							highlight = function(ctx)
-								if ctx.item.kind_name == "llm" then
-									return "BlinkCmpKindSnippet"
-								else
-									return ctx.kind_hl
-								end
-							end,
-						},
 					},
 				},
 			},
@@ -92,7 +78,7 @@ return {
 				selection = { preselect = true, auto_insert = false },
 			},
 			documentation = {
-				auto_show = false,
+				auto_show = true,
 				window = {
 					border = "single",
 					scrollbar = false,
@@ -105,7 +91,7 @@ return {
 			},
 			trigger = {
 				prefetch_on_insert = false,
-				show_on_blocked_trigger_characters = {},
+				show_on_x_blocked_trigger_characters = { "'", '"', "(", "{" },
 			},
 		},
 		signature = {
@@ -115,17 +101,21 @@ return {
 			},
 		},
 		sources = {
-			default = { "lsp", "path", "lazydev", "buffer", "llm" },
-			per_filetype = {
-				llm = { inherit_defaults = false }, -- enbale: "llm_cmds"
-			},
+			default = { "lsp", "copilot", "path", "lazydev", "buffer", "dictionary" },
 			providers = {
-				llm = {
-					name = "LLM",
-					module = "llm.common.completion.frontends.blink",
-					timeout_ms = 10000,
+				copilot = {
+					name = "copilot",
+					module = "blink-cmp-copilot",
 					score_offset = 100,
 					async = true,
+				},
+				dictionary = {
+					module = "blink-cmp-dictionary",
+					name = "Dict",
+					min_keyword_length = 3,
+					opts = {
+						dictionary_files = { vim.fn.expand("~/.config/nvim/dicts/dict.txt") },
+					},
 				},
 				lazydev = {
 					name = "Development",
@@ -133,13 +123,13 @@ return {
 				},
 				lsp = {
 					transform_items = function(_, items)
-						-- the default transformer will do this
+						-- The default transformer will do this
 						for _, item in ipairs(items) do
 							if item.kind == require("blink.cmp.types").CompletionItemKind.Snippet then
 								item.score_offset = item.score_offset - 3
 							end
 						end
-						-- you can define your own filter for rime item
+						-- You can define your own filter for rime item
 						return items
 					end,
 				},
@@ -150,7 +140,7 @@ return {
 			implementation = "prefer_rust_with_warning",
 			prebuilt_binaries = {
 				download = false,
-				ignore_version_mismatch = false,
+				ignore_version_mismatch = true,
 			},
 		},
 	},

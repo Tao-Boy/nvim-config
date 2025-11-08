@@ -5,7 +5,7 @@ vim.g.gh_proxy = "gh-proxy.com/"
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	local lazyrepo = "https://" .. vim.g.gh_proxy .. "github.com/folke/lazy.nvim.git"
+	local lazyrepo = "https://" .. "github.com/folke/lazy.nvim.git"
 	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
 	if vim.v.shell_error ~= 0 then
 		vim.api.nvim_echo({
@@ -21,10 +21,25 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	default = { lazy = true },
-	spec = { import = "plugins" },
+	spec = {
+		import = "plugins",
+	},
 	ui = { border = "rounded", backdrop = 100 },
-	git = {
-		url_format = "https://" .. vim.g.gh_proxy .. "github.com/%s.git",
+	pkg = {
+		enabled = true,
+		cache = vim.fn.stdpath("state") .. "/lazy/pkg-cache.lua",
+		-- the first package source that is found for a plugin will be used.
+		sources = {
+			"lazy",
+			"rockspec", -- will only be used when rocks.enabled is true
+			"packspec",
+		},
+	},
+	rocks = {
+		enabled = true,
+    hererocks = false,
+		root = vim.fn.stdpath("data") .. "/lazy-rocks",
+		server = "https://nvim-neorocks.github.io/rocks-binaries/",
 	},
 	performance = {
 		cache = { enabled = true },

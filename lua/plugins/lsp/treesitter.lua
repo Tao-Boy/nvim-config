@@ -1,32 +1,44 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
-	event = { "BufNewFile", "BufRead" },
+	branch = "main",
+	init = function()
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = "*",
+			callback = function()
+				pcall(vim.treesitter.start)
+			end,
+		})
+	end,
 	cmd = { "TSUpdate", "TSInstall", "TSInstallInfo" },
 	build = ":TSUpdate",
 	config = function()
-		local parsers = require("nvim-treesitter.parsers").get_parser_configs()
-		for _, p in pairs(parsers) do
-			p.install_info.url = p.install_info.url:gsub("github.com", vim.g.gh_proxy .. "github.com")
+		local parsers = require("nvim-treesitter.parsers")
+		for _, p in ipairs(parsers) do
+			p.install_info.url = p.install_info.url:gsub("github.com", "gh-proxy.com/github.com")
 		end
-		require("nvim-treesitter.configs").setup({
-			auto_install = false,
+		require("nvim-treesitter.config").setup({
 			highlight = {
 				enable = true,
 				additional_vim_regex_highlighting = false,
 			},
+			auto_install = true,
 			ensure_installed = {
 				"cpp",
 				"lua",
 				"rust",
+				"python",
 				"vim",
 				"regex",
 				"bash",
 				"markdown_inline",
+				"comment",
+				"yaml",
 				"markdown",
 				"html",
+				"css",
+				"nix",
 				"typst",
-				"python",
-        "latex"
+				"vimdoc",
 			},
 		})
 	end,

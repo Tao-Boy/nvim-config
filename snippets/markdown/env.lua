@@ -10,9 +10,9 @@ local tex = require("utils.latex")
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
 
-ls.add_snippets("tex", {
+ls.add_snippets("org", {
 	s(
-		{ trig = "ii", snippetType = "autosnippet", hidden = true },
+		{ trig = "mk", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
       \(<>\)
@@ -38,12 +38,12 @@ ls.add_snippets("tex", {
 		{ condition = tex.in_text }
 	),
 	s(
-		{ trig = "dd", snippetType = "autosnippet", hidden = true },
+		{ trig = "dm", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
-      \[
+      \begin{equation*}
         <>
-      \]
+      \end{equation*}
       ]],
 			{
 				i(1),

@@ -14,6 +14,7 @@ local config = function()
 		set("<leader>cn", vim.lsp.buf.rename, "[C]ode Item Re[N]ame")
 		set("<leader>ct", vim.lsp.buf.type_definition, "[C]ode [T]ype definition")
 		set("<leader>cd", vim.diagnostic.open_float, "[C]ode [D]iagnostic")
+		set("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 	end
 
 	vim.diagnostic.config({
@@ -70,12 +71,6 @@ return {
 				},
 			},
 		},
-		-- {
-		-- 	"mason-org/mason-lspconfig.nvim",
-		-- 	opts = {
-		-- 		automatic_enable = false,
-		-- 	},
-		-- },
 	},
 	event = "User AfterLoad",
 	config = config,
