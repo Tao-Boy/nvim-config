@@ -9,6 +9,7 @@ keymap("n", "<C-x>", "<cmd>lua require('snacks.bufdelete').delete()<CR>", opts)
 keymap("n", "<Esc>", "<cmd>nohl<CR>", opts)
 keymap("n", "<leader>p", "<cmd>Lazy<CR>", opts)
 keymap("n", "<leader>bd", "<cmd>bd<CR>", opts)
+keymap("n", "<leader>h", "a<C-g>u<Esc>[s1z=`]a<C-g>u<Esc>", opts)
 
 keymap("i", "<C-j>", "<Esc>", opts)
 keymap("i", "<A-h>", "<Left>", opts)

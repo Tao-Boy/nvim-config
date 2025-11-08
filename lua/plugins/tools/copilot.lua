@@ -1,5 +1,6 @@
 return {
 	"zbirenbaum/copilot.lua",
+	enabled = false,
 	dependencies = {
 		"copilotlsp-nvim/copilot-lsp",
 	},
@@ -9,7 +10,7 @@ return {
 		require("copilot").setup({
 			panel = { enabled = false },
 			suggestion = {
-				enabled = false,
+				enabled = true,
 			},
 		})
 	end,

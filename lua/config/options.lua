@@ -8,6 +8,10 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 
+vim.opt.spell = true
+vim.opt.spelllang = { "en,cjk" }
+vim.opt.spelloptions = "camel"
+
 vim.opt.undofile = false
 vim.opt.ruler = false
 

@@ -29,11 +29,10 @@ return {
 	event = { "InsertEnter", "CmdlineEnter", "User AfterLoad" },
 	build = cmd,
 	dependencies = {
-		"L3MON4D3/LuaSnip",
+		{ "L3MON4D3/LuaSnip" },
 		{
 			"Kaiser-Yang/blink-cmp-dictionary",
 			dependencies = { "nvim-lua/plenary.nvim" },
-			{ "giuxtaposition/blink-cmp-copilot" },
 		},
 	},
 	opts = {
@@ -101,17 +100,12 @@ return {
 			},
 		},
 		sources = {
-			default = { "lsp", "copilot", "path", "lazydev", "buffer", "dictionary" },
+			default = { "lsp", "path", "lazydev", "buffer", "dictionary" },
 			providers = {
-				copilot = {
-					name = "copilot",
-					module = "blink-cmp-copilot",
-					score_offset = 100,
-					async = true,
-				},
 				dictionary = {
 					module = "blink-cmp-dictionary",
 					name = "Dict",
+					max_items = 5,
 					min_keyword_length = 3,
 					opts = {
 						dictionary_files = { vim.fn.expand("~/.config/nvim/dicts/dict.txt") },
@@ -122,6 +116,7 @@ return {
 					module = "lazydev.integrations.blink",
 				},
 				lsp = {
+					fallbacks = { "buffer", "dictionary" },
 					transform_items = function(_, items)
 						-- The default transformer will do this
 						for _, item in ipairs(items) do
