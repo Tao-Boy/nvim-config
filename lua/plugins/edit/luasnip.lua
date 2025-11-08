@@ -2,7 +2,12 @@ return {
 	"L3MON4D3/LuaSnip",
 	version = "v2.*",
 	events = "User AfterLoad",
-	build = "make install_jsregexp",
+	build = (function()
+		if vim.uv.os_uname().sysname == "Windows_NT" then
+			return
+		end
+		return "make install_jsregexp"
+	end)(),
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
 	},
