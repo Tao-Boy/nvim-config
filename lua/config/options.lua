@@ -65,6 +65,8 @@ vim.opt.title = false
 vim.lsp.log.set_level(vim.log.levels.OFF)
 vim.opt.shadafile = "NONE"
 
+vim.g.tex_flavor = "latex"
+
 vim.opt.pumblend = 20
 vim.opt.fixeol = false
 

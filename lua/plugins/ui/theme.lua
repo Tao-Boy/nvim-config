@@ -1,9 +1,9 @@
 return {
-  "folke/tokyonight.nvim",
-  init = function()
-    require("tokyonight").setup({
-      transparent = true,
-    })
-    vim.cmd("colorscheme tokyonight")
-  end,
+	"ellisonleao/gruvbox.nvim",
+	init = function()
+		require("gruvbox").setup({
+			transparent_mode = true,
+		})
+		vim.cmd("colorscheme gruvbox")
+	end,
 }

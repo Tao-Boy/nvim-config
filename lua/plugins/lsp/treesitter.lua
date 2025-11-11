@@ -1,6 +1,6 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
-	branch = "main",
+	branch = "master",
 	init = function()
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = "*",
@@ -12,16 +12,17 @@ return {
 	cmd = { "TSUpdate", "TSInstall", "TSInstallInfo" },
 	build = ":TSUpdate",
 	config = function()
-		local parsers = require("nvim-treesitter.parsers")
-		for _, p in ipairs(parsers) do
+		local parsers = require("nvim-treesitter.parsers").get_parser_configs()
+		for _, p in pairs(parsers) do
 			p.install_info.url = p.install_info.url:gsub("github.com", "gh-proxy.com/github.com")
 		end
-		require("nvim-treesitter.config").setup({
+		require("nvim-treesitter.configs").setup({
 			highlight = {
 				enable = true,
-				additional_vim_regex_highlighting = false,
+				additional_vim_regex_highlighting = true,
+				disable = { "latex" },
 			},
-			auto_install = true,
+			auto_install = false,
 			ensure_installed = {
 				"cpp",
 				"lua",
@@ -39,6 +40,10 @@ return {
 				"nix",
 				"typst",
 				"vimdoc",
+			},
+			rainbow = {
+				enable = true,
+				query = "rainbow-parens",
 			},
 		})
 	end,
