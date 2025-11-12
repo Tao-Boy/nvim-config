@@ -22,6 +22,17 @@ elseif jit.os:lower() == "windows" then
 		.. os
 		.. " libblink_cmp_fuzzy"
 		.. lib
+elseif jit.os:lower() == "osx" then
+	local os = "aarch64-apple-darwin.dylib"
+	local lib = ".dylib"
+	cmd = "mkdir -p target/release && cd target/release"
+		.. " && curl -LO "
+		.. base_url
+		.. os
+		.. " && mv "
+		.. os
+		.. " libblink_cmp_fuzzy"
+		.. lib
 end
 
 return {
