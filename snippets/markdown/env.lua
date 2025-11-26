@@ -10,116 +10,57 @@ local tex = require("utils.latex")
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
 
-ls.add_snippets("org", {
+ls.add_snippets("markdown", {
 	s(
-		{ trig = "mk", snippetType = "autosnippet", hidden = true },
+		{ trig = "ii", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
-      \(<>\)
+      $<>$<>
       ]],
 			{
 				i(1),
+				i(0),
 			}
 		),
-		-- callbacks = {
-		-- 	[1] = {
-		-- 		[events.enter] = function()
-		-- 			if vim.g.rime_enabled then
-		-- 				vim.cmd("ToggleRime")
-		-- 			end
-		-- 		end,
-		-- 		[events.leave] = function()
-		-- 			if not vim.g.rime_enabled then
-		-- 				vim.cmd("ToggleRime")
-		-- 			end
-		-- 		end,
-		-- 	},
-		-- },
-		{ condition = tex.in_text }
+		{ condition = tex.not_in_latex }
 	),
 	s(
-		{ trig = "dm", snippetType = "autosnippet", hidden = true },
+		{ trig = "dd", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
-      \begin{equation*}
+      $$
         <>
-      \end{equation*}
+      $$
+      <>
       ]],
 			{
 				i(1),
+				i(0),
 			}
 		),
-		-- callbacks = {
-		-- 	[1] = {
-		-- 		[events.enter] = function()
-		-- 			if vim.g.rime_enabled then
-		-- 				vim.cmd("ToggleRime")
-		-- 			end
-		-- 		end,
-		-- 		[events.leave] = function()
-		-- 			if not vim.g.rime_enabled then
-		-- 				vim.cmd("ToggleRime")
-		-- 			end
-		-- 		end,
-		-- 	},
-		-- },
-		{ condition = tex.in_text }
+		{ condition = tex.not_in_latex }
 	),
-	-- 开始一个环境
 	s(
 		{ trig = "beg", snippetType = "autosnippet", hidden = true },
 		fmta(
 			[[
-      \begin{<>}[<>]
+      \begin{<>}
         <>
       \end{<>}
+      <>
       ]],
 			{
 				i(1),
 				i(2),
-				i(0),
 				rep(1),
+				i(0),
 			}
 		),
 		{
-			-- callbacks = {
-			-- 	[1] = {
-			-- 		[events.enter] = function()
-			-- 			if vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 		[events.leave] = function()
-			-- 			if not vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 	},
-			-- },
 			condition = line_begin,
 		}
 	),
 
-	------------------------------------------------------------------------------------
-	------------------------------------------------------------------------------------
-	------------------------------------------------------------------------------------
-
-	-- 参考文献
-	s(
-		{ trig = "bib", snippetType = "autosnippet", hidden = true },
-		fmta(
-			[[
-      \begin{thebibliography}
-        <>
-      \end{thebibliography}
-      ]],
-			{
-				i(0),
-			}
-		),
-		{ condition = line_begin }
-	),
-	-- 代码块
 	s(
 		{ trig = "equ", snippetType = "autosnippet", hidden = true },
 		fmta(
@@ -127,27 +68,15 @@ ls.add_snippets("org", {
       \begin{equation}
         <>
       \end{equation}
+      <>
       ]],
 			{
 				i(1),
+				i(0),
 			}
 		),
 		{
-			-- callbacks = {
-			-- 	[1] = {
-			-- 		[events.enter] = function()
-			-- 			if vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 		[events.leave] = function()
-			-- 			if not vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 	},
-			-- },
-			condition = tex.in_text * line_begin,
+			condition = tex.not_in_latex * line_begin,
 		}
 	),
 	-- 方程组
@@ -164,77 +93,7 @@ ls.add_snippets("org", {
 			}
 		),
 		{
-			-- callbacks = {
-			-- 	[1] = {
-			-- 		[events.enter] = function()
-			-- 			if vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 		[events.leave] = function()
-			-- 			if not vim.g.rime_enabled then
-			-- 				vim.cmd("ToggleRime")
-			-- 			end
-			-- 		end,
-			-- 	},
-			-- },
 			condition = tex.in_mathzone,
 		}
-	),
-
-	-- 无序列表
-	s(
-		{ trig = "bit", snippetType = "autosnippet", hidden = true },
-		fmta(
-			[[
-      \begin{itemize}
-        \item <>
-      \end{itemize}
-      ]],
-			{
-				i(0),
-			}
-		),
-		{ condition = line_begin }
-	),
-
-	-- 章
-	s(
-		{ trig = "cha", hidden = true, snippetType = "autosnippet" },
-		fmta(
-			[[
-        \chapter{<>}
-      ]],
-			{
-				i(1),
-			}
-		),
-		{ condition = line_begin }
-	),
-
-	-- 节
-	s(
-		{ trig = "sec", hidden = true, snippetType = "autosnippet" },
-		fmta(
-			[[
-        \section{<>}
-      ]],
-			{
-				i(1),
-			}
-		),
-		{ condition = tex.in_text * line_begin }
-	),
-	s(
-		{ trig = "ssec", hidden = true, snippetType = "autosnippet" },
-		fmta(
-			[[
-        \subsection{<>}
-      ]],
-			{
-				i(1),
-			}
-		),
-		{ condition = line_begin }
 	),
 })

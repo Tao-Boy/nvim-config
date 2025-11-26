@@ -1,9 +1,5 @@
 return {
 	"zbirenbaum/copilot.lua",
-	enabled = false,
-	dependencies = {
-		"copilotlsp-nvim/copilot-lsp",
-	},
 	event = { "InsertEnter" },
 	cmd = "Copilot",
 	config = function()
@@ -11,6 +7,7 @@ return {
 			panel = { enabled = false },
 			suggestion = {
 				enabled = true,
+        auto_trigger = true,
 			},
 		})
 	end,

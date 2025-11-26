@@ -111,7 +111,8 @@ return {
 			},
 		},
 		sources = {
-			default = { "lsp", "path", "lazydev", "buffer", "dictionary" },
+			default = { "lsp", "path", "lazydev", "dictionary" },
+			-- default = { "lsp", "path", "lazydev" },
 			providers = {
 				dictionary = {
 					module = "blink-cmp-dictionary",
@@ -127,15 +128,13 @@ return {
 					module = "lazydev.integrations.blink",
 				},
 				lsp = {
-					fallbacks = { "buffer", "dictionary" },
+					fallbacks = { "dictionary" },
 					transform_items = function(_, items)
-						-- The default transformer will do this
 						for _, item in ipairs(items) do
 							if item.kind == require("blink.cmp.types").CompletionItemKind.Snippet then
 								item.score_offset = item.score_offset - 3
 							end
 						end
-						-- You can define your own filter for rime item
 						return items
 					end,
 				},

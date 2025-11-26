@@ -11,49 +11,49 @@ ls.add_snippets("org", {
 		fmta([[\mathsf{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "mbf", snippetType = "autosnippet", hidden = true },
 		fmta([[\mathbf{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "cal", snippetType = "autosnippet", hidden = true },
 		fmta([[\mathcal{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "scr", snippetType = "autosnippet", hidden = true },
 		fmta([[\mathscr{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "mbb", snippetType = "autosnippet", hidden = true },
 		fmta([[\mathbb{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "bm", snippetType = "autosnippet", hidden = true },
 		fmta([[\bm{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "mrm", snippetType = "autosnippet", hidden = true },
 		fmta([[\mathrm{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "tbf", snippetType = "autosnippet", hidden = true },
@@ -66,12 +66,12 @@ ls.add_snippets("org", {
 		fmta([[\text{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
-	s({ trig = "RR", snippetType = "autosnippet", hidden = true }, t("\\mathbb{R}"),{ condition = tex.in_mathzone }),
-	s({ trig = "CC", snippetType = "autosnippet", hidden = true }, t("\\mathbb{C}"),{ condition = tex.in_mathzone }),
-	s({ trig = "ZZ", snippetType = "autosnippet", hidden = true }, t("\\mathbb{Z}"),{ condition = tex.in_mathzone }),
-	s({ trig = "NN", snippetType = "autosnippet", hidden = true }, t("\\mathbb{N}"),{ condition = tex.in_mathzone }),
-	s({ trig = "QQ", snippetType = "autosnippet", hidden = true }, t("\\mathbb{Q}"),{ condition = tex.in_mathzone }),
-	s({ trig = "FF", snippetType = "autosnippet", hidden = true }, t("\\mathbb{F}"),{ condition = tex.in_mathzone }),
+	s({ trig = "RR", snippetType = "autosnippet", hidden = true }, t("\\mathbb{R}"),{ condition = tex.in_latex }),
+	s({ trig = "CC", snippetType = "autosnippet", hidden = true }, t("\\mathbb{C}"),{ condition = tex.in_latex }),
+	s({ trig = "ZZ", snippetType = "autosnippet", hidden = true }, t("\\mathbb{Z}"),{ condition = tex.in_latex }),
+	s({ trig = "NN", snippetType = "autosnippet", hidden = true }, t("\\mathbb{N}"),{ condition = tex.in_latex }),
+	s({ trig = "QQ", snippetType = "autosnippet", hidden = true }, t("\\mathbb{Q}"),{ condition = tex.in_latex }),
+	s({ trig = "FF", snippetType = "autosnippet", hidden = true }, t("\\mathbb{F}"),{ condition = tex.in_latex }),
 })

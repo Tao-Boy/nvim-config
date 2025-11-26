@@ -13,14 +13,14 @@ return {
 		fmta([[\bra{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "ket", wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
 		fmta([[\ket{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "bk", snippetType = "autosnippet", hidden = true },
@@ -28,6 +28,6 @@ return {
 			sn(nil, { t("\\braket{"), i(1), t("}{"), i(2), t("}") }),
 			sn(nil, { t("\\mel{"), i(1), t("}{"), i(2), t("}{"), i(3), t("}") }),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 }

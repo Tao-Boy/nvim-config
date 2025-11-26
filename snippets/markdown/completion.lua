@@ -8,7 +8,7 @@ local f = ls.function_node
 local fmta = require("luasnip.extras.fmt").fmta
 local tex = require("utils.latex")
 
-ls.add_snippets("org", {
+ls.add_snippets("markdown", {
 	s(
 		{ trig = "([%a%)%]%}])(%d)", regTrig = true, wordTrig = false, snippetType = "autosnippet", hidden = true },
 		fmta("<>_<>", {
@@ -19,7 +19,7 @@ ls.add_snippets("org", {
 				return snip.captures[2]
 			end),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "([%a%)%]%}])_(%d)(%d)", regTrig = true, wordTrig = false, snippetType = "autosnippet", hidden = true },
@@ -34,7 +34,7 @@ ls.add_snippets("org", {
 				return snip.captures[3]
 			end),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{
@@ -53,7 +53,7 @@ ls.add_snippets("org", {
 				return snip.captures[2]
 			end),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{
@@ -75,7 +75,7 @@ ls.add_snippets("org", {
 				return snip.captures[3]
 			end),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{
@@ -92,7 +92,7 @@ ls.add_snippets("org", {
 			end),
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "(%a)/", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 100, hidden = true },
@@ -102,7 +102,7 @@ ls.add_snippets("org", {
 			end),
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{
@@ -119,7 +119,7 @@ ls.add_snippets("org", {
 			end),
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{
@@ -136,7 +136,7 @@ ls.add_snippets("org", {
 			end),
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{
@@ -179,21 +179,21 @@ ls.add_snippets("org", {
 				i(2, "\\infty"),
 			}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "lsup", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
 		fmta([[\limsup_{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "linf", regTrig = true, wordTrig = false, snippetType = "autosnippet", hidden = true },
 		fmta([[\liminf_{<>}]], {
 			i(1),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "sum", snippetType = "autosnippet", hidden = true },
@@ -201,7 +201,7 @@ ls.add_snippets("org", {
 			sn(nil, { t("\\sum_{"), i(1), t("} ") }),
 			sn(nil, { t("\\sum_{"), i(1), t("}^{"), i(2), t("} ") }),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "par", snippetType = "autosnippet", hidden = true },
@@ -210,7 +210,7 @@ ls.add_snippets("org", {
 			sn(nil, { t("\\frac{\\partial^2 "), i(1), t(" }{\\partial "), i(2), t(" ^2}") }),
 			sn(nil, { t("\\frac{\\partial^2 "), i(1), t(" }{\\partial "), i(2), t(" \\partial "), i(3), t(" }") }),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 
 	s(
@@ -220,7 +220,7 @@ ls.add_snippets("org", {
 			sn(nil, { t("\\frac{\\dif^2 "), i(1), t(" }{\\dif "), i(2), t("^2}") }),
 			sn(nil, { t("\\frac{\\dif^2 "), i(1), t(" }{\\dif "), i(2), t(" \\dif "), i(3), t(" }") }),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 
 	s(
@@ -229,7 +229,7 @@ ls.add_snippets("org", {
 			sn(nil, { t("\\prod_{"), i(1), t("} ") }),
 			sn(nil, { t("\\prod_{"), i(1), t("}^{"), i(2), t("} ") }),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "bot", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -237,7 +237,7 @@ ls.add_snippets("org", {
 			i(1),
 			i(2),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "bcap", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -245,7 +245,7 @@ ls.add_snippets("org", {
 			i(1),
 			i(2),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "bcup", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -253,7 +253,7 @@ ls.add_snippets("org", {
 			i(1),
 			i(2),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "int", regTrig = true, wordTrig = false, snippetType = "autosnippet", hidden = true },
@@ -263,7 +263,7 @@ ls.add_snippets("org", {
 			i(3),
 			i(4),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "oint", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -272,7 +272,7 @@ ls.add_snippets("org", {
 			i(2),
 			i(3),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "2int", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -285,7 +285,7 @@ ls.add_snippets("org", {
 			i(6),
 			i(7),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "iint", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -294,7 +294,7 @@ ls.add_snippets("org", {
 			i(2),
 			i(3),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{
@@ -310,7 +310,7 @@ ls.add_snippets("org", {
 			i(2),
 			i(3),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 	s(
 		{ trig = "lint", regTrig = true, wordTrig = false, snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -318,6 +318,6 @@ ls.add_snippets("org", {
 			i(1),
 			i(2),
 		}),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_latex }
 	),
 })

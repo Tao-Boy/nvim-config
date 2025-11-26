@@ -1,5 +1,6 @@
 vim.opt.viewoptions = "folds,cursor"
 vim.opt.jumpoptions = "stack"
+vim.g.snacks_animate = false
 
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.mouse = "a"
@@ -22,6 +23,7 @@ vim.opt.cursorline = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.termguicolors = true
+
 
 vim.opt.list = false
 vim.opt.signcolumn = "yes"

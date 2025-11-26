@@ -1,10 +1,6 @@
 local ls = require("luasnip")
-local t = ls.text_node
 local s = ls.snippet
-local d = ls.dynamic_node
 local i = ls.insert_node
-local sn = ls.snippet_node
-local f = ls.function_node
 local fmta = require("luasnip.extras.fmt").fmta
 local tex = require("utils.latex")
 
@@ -21,7 +17,7 @@ ls.add_snippets("org", {
 				i(1),
 			}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "Bmat", snippetType = "autosnippet", hidden = true },
@@ -35,7 +31,7 @@ ls.add_snippets("org", {
 				i(1),
 			}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "pmat", snippetType = "autosnippet", hidden = true },
@@ -49,7 +45,7 @@ ls.add_snippets("org", {
 				i(1),
 			}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "Vmat", snippetType = "autosnippet", hidden = true },
@@ -63,7 +59,7 @@ ls.add_snippets("org", {
 				i(1),
 			}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "Bmat", snippetType = "autosnippet", hidden = true },
@@ -75,7 +71,7 @@ ls.add_snippets("org", {
 				i(1),
 			}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "vmat", snippetType = "autosnippet", hidden = true },
@@ -87,7 +83,7 @@ ls.add_snippets("org", {
 				i(1),
 			}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "Vmat", snippetType = "autosnippet", hidden = true },
@@ -99,7 +95,7 @@ ls.add_snippets("org", {
 				i(1),
 			}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 
 	s(
@@ -114,7 +110,7 @@ ls.add_snippets("org", {
       ]],
 			{}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "II4", snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -129,7 +125,7 @@ ls.add_snippets("org", {
       ]],
 			{}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "II5", snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -145,7 +141,7 @@ ls.add_snippets("org", {
       ]],
 			{}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 	s(
 		{ trig = "II6", snippetType = "autosnippet", priority = 2000, hidden = true },
@@ -162,6 +158,6 @@ ls.add_snippets("org", {
       ]],
 			{}
 		),
-		{ condition = tex.in_mathzone }
+		{ condition = tex.in_text }
 	),
 })

@@ -1,7 +1,7 @@
 vim.loader.enable()
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.gh_proxy = "gh-proxy.com/"
+vim.g.gh_proxy = "gh-proxy.org/"
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -25,22 +25,6 @@ require("lazy").setup({
 		import = "plugins",
 	},
 	ui = { border = "rounded", backdrop = 100 },
-	pkg = {
-		enabled = true,
-		cache = vim.fn.stdpath("state") .. "/lazy/pkg-cache.lua",
-		-- the first package source that is found for a plugin will be used.
-		sources = {
-			"lazy",
-			"rockspec", -- will only be used when rocks.enabled is true
-			"packspec",
-		},
-	},
-	rocks = {
-		enabled = true,
-    hererocks = false,
-		root = vim.fn.stdpath("data") .. "/lazy-rocks",
-		server = "https://nvim-neorocks.github.io/rocks-binaries/",
-	},
 	performance = {
 		cache = { enabled = true },
 		reset_packpath = true,
