@@ -16,6 +16,7 @@ local lsp_config = {
 	},
 	texlab = {},
 	pyright = {},
+	julials = {},
 	clangd = {},
 	tinymist = {
 		init_options = {

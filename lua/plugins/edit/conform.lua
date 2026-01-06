@@ -16,8 +16,9 @@ return {
 			stop_after_first = true,
 			lsp_format = "fallback",
 		},
+		format_on_save = { timeout_ms = 500 },
 		formatters_by_ft = {
-			nix = { "nixfmt" },
+			nix = { "alejandra" },
 			lua = { "stylua" },
 			rust = { "rustfmt" },
 			python = { "black" },
@@ -28,9 +29,14 @@ return {
 			typescript = { "prettier" },
 			html = { "prettier" },
 			yaml = { "prettier" },
-			json = { "prettier" },
+			json = { "jq" },
 			jsonc = { "prettier" },
 			tex = { "tex-fmt" },
+		},
+		formatters = {
+			["tex-fmt"] = {
+				prepend_args = { "--nowrap" },
+			},
 		},
 	},
 }

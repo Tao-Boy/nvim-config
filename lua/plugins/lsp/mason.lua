@@ -8,6 +8,7 @@ return {
 				package_pending = "➜",
 				package_uninstalled = "✗",
 			},
+			border = "rounded",
 		},
 		github = {
 			download_url_template = "https://" .. vim.g.gh_proxy .. "github.com/%s/releases/download/%s/%s",

@@ -9,10 +9,6 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 
-vim.opt.spell = true
-vim.opt.spelllang = { "en,cjk" }
-vim.opt.spelloptions = "camel"
-
 vim.opt.undofile = false
 vim.opt.ruler = false
 
@@ -23,7 +19,6 @@ vim.opt.cursorline = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.termguicolors = true
-
 
 vim.opt.list = false
 vim.opt.signcolumn = "yes"
@@ -51,6 +46,8 @@ vim.opt.showmode = false
 vim.opt.backup = false
 vim.opt.clipboard = "unnamedplus"
 
+vim.opt.spell = false
+
 vim.opt.cmdheight = 0
 vim.opt.conceallevel = 0
 vim.opt.fileencoding = "utf-8"
@@ -58,7 +55,7 @@ vim.opt.fileencoding = "utf-8"
 vim.opt.smartindent = true
 vim.opt.swapfile = false
 
-vim.opt.updatetime = 100
+vim.opt.updatetime = 200
 vim.opt.writebackup = false
 
 vim.opt.scrolloff = 0
@@ -74,14 +71,3 @@ vim.opt.fixeol = false
 
 vim.opt.wrap = true
 vim.opt.linebreak = true
-
-vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
-vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
-vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
-vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
-vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
-vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
-vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
-vim.api.nvim_set_hl(0, "TabLineFill", { bg = "none" })
-vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })
-vim.api.nvim_set_hl(0, "Pmenu", { bg = "NONE" })

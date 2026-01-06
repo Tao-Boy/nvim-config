@@ -1,50 +1,12 @@
-local cmd = ""
-local base_url = "https://" .. vim.g.gh_proxy .. "github.com/Saghen/blink.cmp/releases/latest/download/"
-if jit.os:lower() == "linux" then
-	local os = "x86_64-unknown-linux-gnu.so"
-	local lib = ".so"
-	cmd = "mkdir -p target/release && cd target/release"
-		.. " && curl -LO "
-		.. base_url
-		.. os
-		.. " && mv "
-		.. os
-		.. " libblink_cmp_fuzzy"
-		.. lib
-elseif jit.os:lower() == "windows" then
-	local os = "x86_64-pc-windows-msvc.dll"
-	local lib = ".dll"
-	cmd = "mkdir target\\release & cd target\\release"
-		.. " & curl -LO "
-		.. base_url
-		.. os
-		.. " & ren "
-		.. os
-		.. " libblink_cmp_fuzzy"
-		.. lib
-elseif jit.os:lower() == "osx" then
-	local os = "aarch64-apple-darwin.dylib"
-	local lib = ".dylib"
-	cmd = "mkdir -p target/release && cd target/release"
-		.. " && curl -LO "
-		.. base_url
-		.. os
-		.. " && mv "
-		.. os
-		.. " libblink_cmp_fuzzy"
-		.. lib
-end
-
 return {
 	"saghen/blink.cmp",
 	event = { "InsertEnter", "CmdlineEnter", "User AfterLoad" },
-	build = cmd,
+	build = function(plugin)
+		require("utils.download").blink_cmp(plugin)
+	end,
 	dependencies = {
 		{ "L3MON4D3/LuaSnip" },
-		{
-			"Kaiser-Yang/blink-cmp-dictionary",
-			dependencies = { "nvim-lua/plenary.nvim" },
-		},
+		"Kaiser-Yang/blink-cmp-avante",
 	},
 	opts = {
 		keymap = {
@@ -66,7 +28,7 @@ return {
 		completion = {
 			menu = {
 				max_height = 8,
-				border = "single",
+				border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
 				winhighlight = "Normal:None,FloatBorder:None,CursorLine:BlinkCmpMenuSelection,Search:None",
 				scrollbar = false,
 				draw = {
@@ -111,24 +73,19 @@ return {
 			},
 		},
 		sources = {
-			default = { "lsp", "path", "lazydev", "dictionary" },
+			default = { "avante", "lsp", "path", "buffer", "lazydev" },
 			-- default = { "lsp", "path", "lazydev" },
 			providers = {
-				dictionary = {
-					module = "blink-cmp-dictionary",
-					name = "Dict",
-					max_items = 10,
-					min_keyword_length = 3,
-					opts = {
-						dictionary_files = { vim.fn.expand("~/.config/nvim/dicts/dict.txt") },
-					},
+				avante = {
+					module = "blink-cmp-avante",
+					name = "Avante",
 				},
 				lazydev = {
 					name = "Development",
 					module = "lazydev.integrations.blink",
 				},
 				lsp = {
-					fallbacks = { "dictionary" },
+					fallbacks = { "buffer" },
 					transform_items = function(_, items)
 						for _, item in ipairs(items) do
 							if item.kind == require("blink.cmp.types").CompletionItemKind.Snippet then

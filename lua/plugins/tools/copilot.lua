@@ -1,14 +1,21 @@
 return {
 	"zbirenbaum/copilot.lua",
-	event = { "InsertEnter" },
+	-- enabled = false,
+	event = { "InsertEnter", "User AfterLoad" },
 	cmd = "Copilot",
-	config = function()
-		require("copilot").setup({
-			panel = { enabled = false },
-			suggestion = {
-				enabled = true,
-        auto_trigger = true,
+	build = ":Copilot auth",
+	opts = {
+		suggestion = {
+			enabled = true,
+			auto_trigger = true,
+			hide_during_completion = true,
+			keymap = {
+				accept = "<C-y>",
+				next = "<C-'>",
+				prev = "<C-;>",
+				dismiss = "<C-BS>",
 			},
-		})
-	end,
+		},
+		panel = { enabled = false },
+	},
 }

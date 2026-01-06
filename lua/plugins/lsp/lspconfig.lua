@@ -18,7 +18,11 @@ local config = function()
 	end
 
 	vim.diagnostic.config({
-		virtual_lines = { current_line = true },
+		update_in_insert = false,
+		virtual_text = {
+			spacing = 8,
+		},
+		virtual_lines = false,
 		jump = { float = true },
 		float = {
 			border = "single",

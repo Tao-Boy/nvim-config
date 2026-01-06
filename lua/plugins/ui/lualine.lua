@@ -1,76 +1,103 @@
+local function get_lsp()
+	local buf_clients = vim.lsp.get_clients({ bufnr = 0 })
+	if #buf_clients == 0 then
+		return nil
+	end
+
+	local buf_client_names = {}
+
+	for _, client in pairs(buf_clients) do
+		if client.name ~= "null-ls" and client.name ~= "copilot" then
+			table.insert(buf_client_names, client.name)
+		end
+	end
+
+	local unique_client_names = table.concat(buf_client_names, " & ")
+
+	local language_servers = string.format("[%s]", unique_client_names)
+
+	return language_servers
+end
+
+local function get_copilot_status()
+	local clients = vim.lsp.get_clients({ bufnr = 0 })
+
+	for _, client in ipairs(clients) do
+		if client.name == "copilot" then
+			return ""
+		end
+	end
+
+	return ""
+end
+
 local opts = {
 	options = {
 		icons_enabled = true,
-		disabled_filetypes = { "snacks_dashboard" },
-		always_divide_middle = true,
-		globalstatus = true,
+		theme = "auto",
 		component_separators = { left = "", right = "" },
-		section_separators = { left = "", right = "" },
+		section_separators = { left = "", right = "" },
+		disabled_filetypes = {
+			statusline = {
+				"snacks_dashboard",
+				"Avante",
+				"AvanteInput",
+				"AvanteSelectedFiles",
+			},
+		},
+		ignore_focus = {},
+		always_divide_middle = true,
+		always_show_tabline = true,
+		globalstatus = true,
+		refresh = {
+			statusline = 1000,
+			tabline = 1000,
+			winbar = 1000,
+			refresh_time = 16, -- ~60fps
+			events = {
+				"WinEnter",
+				"BufEnter",
+				"BufWritePost",
+				"SessionLoadPost",
+				"FileChangedShellPost",
+				"VimResized",
+				"Filetype",
+				"CursorMoved",
+				"CursorMovedI",
+				"ModeChanged",
+			},
+		},
 	},
 	sections = {
-		lualine_a = {
-			{
-				function()
-					if vim.bo.modified then
-						return ""
-					else
-						return "󰄳"
-					end
-				end,
-				separator = { left = "", right = "" },
-				padding = { left = 0, right = 1 },
-			},
-			{
-				"mode",
-				separator = { left = "", right = "" },
-				padding = { left = 0, right = 0 },
-			},
-		},
-		lualine_b = {
-			{
-				"branch",
-				icon = "",
-			},
-			{ "diff", padding = { left = 1, right = 1 } },
-		},
+		lualine_a = { "mode" },
+		lualine_b = { "branch", "diff" },
 		lualine_c = {
 			{
-				"lsp_status",
+				get_lsp,
 				icon = "",
-				symbols = {
-					done = "",
-					separator = " & ",
-				},
-				ignore_lsp = { "rime_ls" },
 			},
 			"diagnostics",
 		},
-		lualine_x = {
-			{ "datetime", style = " %H:%M" },
-		},
-		lualine_y = {
-			{
-				"filetype",
-				colored = true,
-				icon_only = true,
-				icon = { align = "left" },
-				padding = { left = 0, right = 0 },
-			},
-			{
-				"filename",
-				separator = { left = "", right = "" },
-				padding = { left = 0, right = 1 },
-			},
-		},
-		lualine_z = {
-			{
-				"progress",
-				separator = { right = "" },
-				icon = { "󰇽", align = "left" },
-				padding = { left = 1, right = 1 },
-			},
-		},
+		lualine_x = { get_copilot_status, "filename" },
+		lualine_y = { "filetype", "progress" },
+		lualine_z = { {
+			function()
+				return "" .. os.date(" %H:%M")
+			end,
+		} },
 	},
+	inactive_sections = {
+		lualine_a = {},
+		lualine_b = {},
+		lualine_c = { "filename" },
+		lualine_x = { "location" },
+		lualine_y = {},
+		lualine_z = {},
+	},
+	tabline = {},
+	winbar = {},
+	inactive_winbar = {},
+	extensions = {},
 }
 
 return {

@@ -1,11 +1,11 @@
 vim.loader.enable()
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.gh_proxy = "gh-proxy.org/"
+vim.g.gh_proxy = "gh.xxooo.cf/"
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	local lazyrepo = "https://" .. "github.com/folke/lazy.nvim.git"
+	local lazyrepo = "https://" .. vim.g.gh_proxy .. "github.com/folke/lazy.nvim.git"
 	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
 	if vim.v.shell_error ~= 0 then
 		vim.api.nvim_echo({
@@ -21,9 +21,8 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	default = { lazy = true },
-	spec = {
-		import = "plugins",
-	},
+	spec = { import = "plugins" },
+	git = { url_format = "https://" .. vim.g.gh_proxy .. "github.com/%s.git" },
 	ui = { border = "rounded", backdrop = 100 },
 	performance = {
 		cache = { enabled = true },
@@ -56,7 +55,6 @@ require("lazy").setup({
 				"optwin",
 				"compiler",
 				"bugreport",
-				"ftplugin",
 			},
 		},
 	},

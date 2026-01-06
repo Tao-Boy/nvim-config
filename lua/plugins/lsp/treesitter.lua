@@ -14,7 +14,7 @@ return {
 	config = function()
 		local parsers = require("nvim-treesitter.parsers").get_parser_configs()
 		for _, p in pairs(parsers) do
-			p.install_info.url = p.install_info.url:gsub("github.com", "gh-proxy.com/github.com")
+			p.install_info.url = p.install_info.url:gsub("github.com", vim.g.gh_proxy .. "github.com")
 		end
 		require("nvim-treesitter.configs").setup({
 			highlight = {
@@ -40,6 +40,7 @@ return {
 				"nix",
 				"typst",
 				"vimdoc",
+				-- "latex",
 			},
 			rainbow = {
 				enable = true,

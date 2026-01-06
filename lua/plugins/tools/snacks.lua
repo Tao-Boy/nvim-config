@@ -74,7 +74,7 @@ return {
 		},
 		indent = {
 			scope = {
-				char = "│",
+				char = "┃",
 				hl = {
 					"RainbowRed",
 					"RainbowYellow",

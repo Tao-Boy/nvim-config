@@ -6,18 +6,16 @@ return {
 		opts = {},
 	},
 	{
-		"HiPhish/rainbow-delimiters.nvim",
-		event = { "InsertEnter", "CmdlineEnter" },
-		config = function()
-			require("rainbow-delimiters.setup").setup({
-				strategy = {
-					[""] = "rainbow-delimiters.strategy.global",
-				},
-				query = {
-					[""] = "rainbow-delimiters",
-					lua = "rainbow-blocks",
-				},
-				highlight = {
+		"saghen/blink.pairs",
+		event = "User AfterLoad",
+		build = function(plugin)
+			require("utils.download").blink_pairs(plugin)
+		end,
+		version = "*",
+		opts = {
+			mappings = { enabled = false },
+			highlights = {
+				groups = {
 					"RainbowDelimiterRed",
 					"RainbowDelimiterYellow",
 					"RainbowDelimiterBlue",
@@ -26,7 +24,7 @@ return {
 					"RainbowDelimiterViolet",
 					"RainbowDelimiterCyan",
 				},
-			})
-		end,
+			},
+		},
 	},
 }
