@@ -39,7 +39,7 @@ return {
 
 			interactions = {
 				inline = {
-					adapter = "siliconflow",
+					adapter = "deepseek",
 					keymaps = {
 						accept_change = { modes = { n = "." } },
 						reject_change = { modes = { n = "," } },
@@ -128,10 +128,11 @@ return {
 							env = {
 								url = "https://api.deepseek.com",
 								chat_url = "/v1/chat/completions",
+								api_key = "cmd:cat " .. os.getenv("HOME") .. "/.config/secrets/deepseek.api",
 							},
 							schema = {
 								model = {
-									default = "deepseek-reasoner",
+									default = "deepseek-chat",
 								},
 							},
 						})

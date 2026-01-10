@@ -61,7 +61,7 @@ vim.opt.writebackup = false
 vim.opt.scrolloff = 0
 vim.opt.sidescrolloff = 8
 vim.opt.title = false
-vim.lsp.log.set_level(vim.log.levels.OFF)
+-- vim.lsp.log.set_level(vim.log.levels.OFF)
 vim.opt.shadafile = "NONE"
 
 vim.g.tex_flavor = "latex"

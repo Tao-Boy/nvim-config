@@ -32,6 +32,7 @@ return {
 			json = { "jq" },
 			jsonc = { "prettier" },
 			tex = { "tex-fmt" },
+			cls = { "tex-fmt" },
 		},
 		formatters = {
 			["tex-fmt"] = {

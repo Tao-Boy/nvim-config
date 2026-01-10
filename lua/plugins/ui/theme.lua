@@ -12,7 +12,7 @@ return {
 		vim.api.nvim_set_hl(0, "StatusLine", { bg = "NONE" })
 		vim.api.nvim_set_hl(0, "Pmenu", { bg = "NONE" })
 		require("catppuccin").setup({
-			flavour = "mocha",
+			flavour = "frappe",
 			transparent_background = true,
 			float = {
 				transparent = true,
