@@ -23,16 +23,20 @@ local function normalize_path(path)
 	return path
 end
 
+local function quote_path(path)
+	if is_windows and path:find(" ") then
+		return '"' .. path:gsub('"', '""') .. '"'
+	end
+	return path
+end
+
 local function get_download_command(url, dest)
 	if is_windows then
 		local dest_path = normalize_path(dest)
-		-- Escape quotes in paths for PowerShell
-		local escaped_url = url:gsub("'", "''")
-		local escaped_dest = dest_path:gsub("'", "''")
+		-- Use curl if available, otherwise fallback to PowerShell
 		return string.format(
-			'powershell -ExecutionPolicy Bypass -Command "& { try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri \'%s\' -OutFile \'%s\'; exit 0 } catch { Write-Error $_.Exception.Message; exit 1 } }"',
-			escaped_url,
-			escaped_dest
+			'curl -L -o "%s" "%s" || powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Invoke-WebRequest -Uri \"%s\" -OutFile \"%s\"; exit 0 } catch { exit 1 }"',
+			dest_path, url, url, dest_path
 		)
 	else
 		return string.format("curl -Lo '%s' '%s'", dest, url)
@@ -48,22 +52,47 @@ M.blink_cmp = function(plugin)
 	local target_file = target_dir .. "/libblink_cmp_fuzzy" .. config.ext
 
 	if vim.fn.isdirectory(target_dir) == 0 then
-		vim.fn.mkdir(target_dir, "p")
+		local parent_dir = target_dir:match("^(.*)[\\/]")
+		if parent_dir and vim.fn.isdirectory(parent_dir) == 0 then
+			local success, err = pcall(vim.fn.mkdir, parent_dir, "p")
+			if not success then
+				vim.notify("Failed to create parent directory: " .. (err or "unknown error"), vim.log.levels.ERROR)
+				return
+			end
+		end
+		local success, err = pcall(vim.fn.mkdir, target_dir, "p")
+		if not success then
+			vim.notify("Failed to create directory: " .. (err or "unknown error"), vim.log.levels.ERROR)
+			return
+		end
 	end
 
 	local download_cmd = get_download_command(download_url, target_file)
 
 	vim.notify("Blink: downloading ...", vim.log.levels.INFO)
 
-	vim.fn.jobstart(download_cmd, {
+	local job_id = vim.fn.jobstart(download_cmd, {
+		on_stdout = function(_, data, _)
+			if data and #data > 0 and data[1] ~= "" then
+				vim.notify("Blink: " .. table.concat(data, "\n"), vim.log.levels.DEBUG)
+			end
+		end,
+		on_stderr = function(_, data, _)
+			if data and #data > 0 and data[1] ~= "" then
+				vim.notify("Blink error: " .. table.concat(data, "\n"), vim.log.levels.WARN)
+			end
+		end,
 		on_exit = function(_, exit_code)
 			if exit_code == 0 then
 				vim.notify("Blink: download finished", vim.log.levels.INFO)
 			else
-				vim.notify("Blink: download failed", vim.log.levels.ERROR)
+				vim.notify("Blink: download failed (exit code: " .. exit_code .. ")", vim.log.levels.ERROR)
 			end
 		end,
 	})
+	if job_id <= 0 then
+		vim.notify("Blink: Failed to start download job", vim.log.levels.ERROR)
+	end
 end
 
 M.blink_pairs = function(plugin)
@@ -75,22 +104,47 @@ M.blink_pairs = function(plugin)
 	local target_file = target_dir .. "/blink_pairs" .. config.ext
 
 	if vim.fn.isdirectory(target_dir) == 0 then
-		vim.fn.mkdir(target_dir, "p")
+		local parent_dir = target_dir:match("^(.*)[\\/]")
+		if parent_dir and vim.fn.isdirectory(parent_dir) == 0 then
+			local success, err = pcall(vim.fn.mkdir, parent_dir, "p")
+			if not success then
+				vim.notify("Failed to create parent directory: " .. (err or "unknown error"), vim.log.levels.ERROR)
+				return
+			end
+		end
+		local success, err = pcall(vim.fn.mkdir, target_dir, "p")
+		if not success then
+			vim.notify("Failed to create directory: " .. (err or "unknown error"), vim.log.levels.ERROR)
+			return
+		end
 	end
 
 	local download_cmd = get_download_command(download_url, target_file)
 
 	vim.notify("blink-pairs: downloading ...", vim.log.levels.INFO)
 
-	vim.fn.jobstart(download_cmd, {
+	local job_id = vim.fn.jobstart(download_cmd, {
+		on_stdout = function(_, data, _)
+			if data and #data > 0 and data[1] ~= "" then
+				vim.notify("blink-pairs: " .. table.concat(data, "\n"), vim.log.levels.DEBUG)
+			end
+		end,
+		on_stderr = function(_, data, _)
+			if data and #data > 0 and data[1] ~= "" then
+				vim.notify("blink-pairs error: " .. table.concat(data, "\n"), vim.log.levels.WARN)
+			end
+		end,
 		on_exit = function(_, exit_code)
 			if exit_code == 0 then
 				vim.notify("blink-pairs: download finished", vim.log.levels.INFO)
 			else
-				vim.notify("blink-paris: download failed", vim.log.levels.ERROR)
+				vim.notify("blink-pairs: download failed (exit code: " .. exit_code .. ")", vim.log.levels.ERROR)
 			end
 		end,
 	})
+	if job_id <= 0 then
+		vim.notify("blink-pairs: Failed to start download job", vim.log.levels.ERROR)
+	end
 end
 
 M.avante = function(plugin)
@@ -109,22 +163,47 @@ M.avante = function(plugin)
 	local target_file = target_dir .. "/" .. target_filename
 
 	if vim.fn.isdirectory(target_dir) == 0 then
-		vim.fn.mkdir(target_dir, "p")
+		local parent_dir = target_dir:match("^(.*)[\\/]")
+		if parent_dir and vim.fn.isdirectory(parent_dir) == 0 then
+			local success, err = pcall(vim.fn.mkdir, parent_dir, "p")
+			if not success then
+				vim.notify("Failed to create parent directory: " .. (err or "unknown error"), vim.log.levels.ERROR)
+				return
+			end
+		end
+		local success, err = pcall(vim.fn.mkdir, target_dir, "p")
+		if not success then
+			vim.notify("Failed to create directory: " .. (err or "unknown error"), vim.log.levels.ERROR)
+			return
+		end
 	end
 
 	local download_cmd = get_download_command(download_url, target_file)
 
 	vim.notify("Avante: downloading core library ...", vim.log.levels.INFO)
 
-	vim.fn.jobstart(download_cmd, {
+	local job_id = vim.fn.jobstart(download_cmd, {
+		on_stdout = function(_, data, _)
+			if data and #data > 0 and data[1] ~= "" then
+				vim.notify("Avante: " .. table.concat(data, "\n"), vim.log.levels.DEBUG)
+			end
+		end,
+		on_stderr = function(_, data, _)
+			if data and #data > 0 and data[1] ~= "" then
+				vim.notify("Avante error: " .. table.concat(data, "\n"), vim.log.levels.WARN)
+			end
+		end,
 		on_exit = function(_, exit_code)
 			if exit_code == 0 then
 				vim.notify("Avante: download finished. Ready to use.", vim.log.levels.INFO)
 			else
-				vim.notify("Avante: download failed", vim.log.levels.ERROR)
+				vim.notify("Avante: download failed (exit code: " .. exit_code .. ")", vim.log.levels.ERROR)
 			end
 		end,
 	})
+	if job_id <= 0 then
+		vim.notify("Avante: Failed to start download job", vim.log.levels.ERROR)
+	end
 end
 
 return M
