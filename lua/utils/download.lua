@@ -1,5 +1,6 @@
 local current_os = jit.os:lower()
 local gh_proxy = vim.g.gh_proxy or ""
+local is_windows = current_os == "windows"
 
 local blink_map = {
 	linux = { file = "x86_64-unknown-linux-gnu.so", ext = ".so" },
@@ -15,6 +16,26 @@ local avante_map = {
 
 local M = {}
 
+local function normalize_path(path)
+	if is_windows then
+		return path:gsub("/", "\\")
+	end
+	return path
+end
+
+local function get_download_command(url, dest)
+	if is_windows then
+		local dest_path = normalize_path(dest)
+		return string.format(
+			'powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri %s -OutFile %s }"',
+			string.format("'%s'", url),
+			string.format("'%s'", dest_path)
+		)
+	else
+		return string.format("curl -Lo '%s' '%s'", dest, url)
+	end
+end
+
 M.blink_cmp = function(plugin)
 	local config = blink_map[current_os]
 	local base_url = "https://" .. gh_proxy .. "github.com/Saghen/blink.cmp/releases/latest/download/"
@@ -27,11 +48,11 @@ M.blink_cmp = function(plugin)
 		vim.fn.mkdir(target_dir, "p")
 	end
 
-	local curl_cmd = string.format("curl -Lo '%s' '%s'", target_file, download_url)
+	local download_cmd = get_download_command(download_url, target_file)
 
 	vim.notify("Blink: downloading ...", vim.log.levels.INFO)
 
-	vim.fn.jobstart(curl_cmd, {
+	vim.fn.jobstart(download_cmd, {
 		on_exit = function(_, exit_code)
 			if exit_code == 0 then
 				vim.notify("Blink: download finished", vim.log.levels.INFO)
@@ -50,15 +71,15 @@ M.blink_pairs = function(plugin)
 	local target_dir = plugin.dir .. "/target/release"
 	local target_file = target_dir .. "/blink_pairs" .. config.ext
 
-	local curl_cmd = string.format("curl -Lo '%s' '%s'", target_file, download_url)
-
-	vim.notify("blink-pairs: downloading ...", vim.log.levels.INFO)
-
 	if vim.fn.isdirectory(target_dir) == 0 then
 		vim.fn.mkdir(target_dir, "p")
 	end
 
-	vim.fn.jobstart(curl_cmd, {
+	local download_cmd = get_download_command(download_url, target_file)
+
+	vim.notify("blink-pairs: downloading ...", vim.log.levels.INFO)
+
+	vim.fn.jobstart(download_cmd, {
 		on_exit = function(_, exit_code)
 			if exit_code == 0 then
 				vim.notify("blink-pairs: download finished", vim.log.levels.INFO)
@@ -88,11 +109,11 @@ M.avante = function(plugin)
 		vim.fn.mkdir(target_dir, "p")
 	end
 
-	local curl_cmd = string.format("curl -Lo '%s' '%s'", target_file, download_url)
+	local download_cmd = get_download_command(download_url, target_file)
 
 	vim.notify("Avante: downloading core library ...", vim.log.levels.INFO)
 
-	vim.fn.jobstart(curl_cmd, {
+	vim.fn.jobstart(download_cmd, {
 		on_exit = function(_, exit_code)
 			if exit_code == 0 then
 				vim.notify("Avante: download finished. Ready to use.", vim.log.levels.INFO)

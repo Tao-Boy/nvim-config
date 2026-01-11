@@ -6,7 +6,6 @@ return {
 	end,
 	dependencies = {
 		{ "L3MON4D3/LuaSnip" },
-		"Kaiser-Yang/blink-cmp-avante",
 	},
 	opts = {
 		keymap = {
@@ -73,13 +72,8 @@ return {
 			},
 		},
 		sources = {
-			default = { "avante", "lsp", "path", "buffer", "lazydev" },
-			-- default = { "lsp", "path", "lazydev" },
+			default = { "lsp", "path", "buffer", "lazydev" },
 			providers = {
-				avante = {
-					module = "blink-cmp-avante",
-					name = "Avante",
-				},
 				lazydev = {
 					name = "Development",
 					module = "lazydev.integrations.blink",
