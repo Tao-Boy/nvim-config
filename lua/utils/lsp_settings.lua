@@ -14,17 +14,47 @@ local lsp_config = {
 			},
 		},
 	},
-	texlab = {},
+	texlab = {
+		settings = {
+			texlab = {
+				build = {
+					executable = "tectonic",
+					args = {
+						"-X",
+						"compile",
+						"%f",
+						"--synctex",
+						"--keep-logs",
+						"--keep-intermediates",
+					},
+					onSave = true,
+					forwardSearchAfter = true,
+				},
+				forwardSearch = {
+					executable = "zathura",
+					args = {
+						"--synctex-forward",
+						"%l:1:%f",
+						"%p",
+					},
+				},
+				chktex = {
+					onOpenAndSave = true,
+					onEdit = false,
+				},
+			},
+		},
+	},
 	pyright = {},
 	julials = {},
 	clangd = {},
-	tinymist = {
-		init_options = {
-			formatterMode = "typstyle",
-			exportPdf = "never",
-			semanticTokens = "disable",
-		},
-	},
+	-- tinymist = {
+	-- 	init_options = {
+	-- 		formatterMode = "typstyle",
+	-- 		exportPdf = "never",
+	-- 		semanticTokens = "disable",
+	-- 	},
+	-- },
 	rust_analyzer = {},
 }
 

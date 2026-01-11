@@ -38,7 +38,6 @@ return {
 				"html",
 				"css",
 				"nix",
-				"typst",
 				"vimdoc",
 				-- "latex",
 			},
