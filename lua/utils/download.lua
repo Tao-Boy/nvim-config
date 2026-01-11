@@ -33,11 +33,15 @@ end
 local function get_download_command(url, dest)
 	if is_windows then
 		local dest_path = normalize_path(dest)
-		-- Use curl if available, otherwise fallback to PowerShell
-		return string.format(
-			'curl -L -o "%s" "%s" || powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Invoke-WebRequest -Uri \"%s\" -OutFile \"%s\"; exit 0 } catch { exit 1 }"',
-			dest_path, url, url, dest_path
-		)
+		-- Use PowerShell on Windows for reliable downloads
+		local ps_cmd = table.concat({
+			"powershell",
+			"-NoProfile",
+			"-ExecutionPolicy Bypass",
+			"-Command",
+			[["try { Invoke-WebRequest -Uri ']] .. url .. [[" .. "' -OutFile '"]] .. dest_path .. [[" .. "' -UseBasicParsing } catch { exit 1 }"]],
+		}, " ")
+		return ps_cmd
 	else
 		return string.format("curl -Lo '%s' '%s'", dest, url)
 	end
