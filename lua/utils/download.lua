@@ -26,10 +26,13 @@ end
 local function get_download_command(url, dest)
 	if is_windows then
 		local dest_path = normalize_path(dest)
+		-- Escape quotes in paths for PowerShell
+		local escaped_url = url:gsub("'", "''")
+		local escaped_dest = dest_path:gsub("'", "''")
 		return string.format(
-			'powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri %s -OutFile %s }"',
-			string.format("'%s'", url),
-			string.format("'%s'", dest_path)
+			'powershell -ExecutionPolicy Bypass -Command "& { try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri \'%s\' -OutFile \'%s\'; exit 0 } catch { Write-Error $_.Exception.Message; exit 1 } }"',
+			escaped_url,
+			escaped_dest
 		)
 	else
 		return string.format("curl -Lo '%s' '%s'", dest, url)
