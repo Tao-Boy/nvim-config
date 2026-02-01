@@ -21,7 +21,7 @@ return {
 			nix = { "alejandra" },
 			lua = { "stylua" },
 			rust = { "rustfmt" },
-			python = { "black" },
+			python = { "ruff", "format" },
 			cpp = { "clang_format" },
 			css = { "dprint" },
 			markdown = { "prettier" },

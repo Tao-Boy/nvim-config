@@ -58,8 +58,8 @@ return {
 						system_prompt = "You can always give me extract physics and math instructions in Chinese.",
 					},
 					adapter = {
-						name = "zhipu",
-						model = "glm-4.7",
+						name = "iflow",
+						model = "qwen3-max",
 					},
 				},
 			},

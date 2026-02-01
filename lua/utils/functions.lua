@@ -134,27 +134,49 @@ M.blink_pairs = function(plugin)
 	})
 end
 
-M.in_env = function(env)
+M.in_tex_env = function(env)
 	local pos = vim.fn["vimtex#env#is_inside"](env)
 	return pos[1] ~= 0 or pos[2] ~= 0
 end
 
-M.in_mathzone = function()
+M.in_tex_mathzone = function()
 	return vim.fn["vimtex#syntax#in_mathzone"]() == 1
 end
 
-M.in_text = function()
-	return not M.in_mathzone()
+M.in_tex_text = function()
+	return not M.in_tex_mathzone()
 end
 
-M.in_item = function()
-	return M.in_env("itemize") or M.in_env("enumerate")
+M.in_tex_item = function()
+	return M.in_tex_env("itemize") or M.in_tex_env("enumerate")
 end
-M.in_bib = function()
-	return M.in_env("thebibliography")
+M.in_tex_bib = function()
+	return M.in_tex_env("thebibliography")
 end
-M.in_tikz = function()
-	return M.in_env("tikzpicture")
+M.in_tex_tikz = function()
+	return M.in_tex_env("tikzpicture")
+end
+
+M.in_typ_mathzone = function()
+	local function node_at_cursor()
+		local ok, node = pcall(vim.treesitter.get_node, { ignore_injections = false })
+		if ok then
+			return node
+		end
+		return nil
+	end
+	local node = node_at_cursor()
+	while node do
+		if node:type() == "math" then
+			return true
+		end
+		node = node:parent()
+	end
+	return false
+end
+
+M.in_typ_text = function()
+	return not M.in_typ_mathzone()
 end
 
 return M

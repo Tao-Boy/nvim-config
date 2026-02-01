@@ -39,20 +39,19 @@ return {
 		},
 	},
 	config = function(_, opts)
-		local function apply_gh_proxy()
-			local prefix = vim.g.gh_proxy .. "github.com"
-			local parsers = require("nvim-treesitter.parsers")
-			for _, p in pairs(parsers) do
-				if p.install_info then
-					p.install_info.url = p.install_info.url:gsub("github.com", prefix)
-				end
-			end
-		end
-
 		vim.api.nvim_create_autocmd("User", {
 			pattern = "TSUpdate",
-			callback = apply_gh_proxy,
+      once = true,
+			callback = function()
+				local prefix = vim.g.gh_proxy .. "github.com"
+				local parsers = require("nvim-treesitter.parsers")
+				for _, p in pairs(parsers) do
+					if p.install_info then
+						p.install_info.url = p.install_info.url:gsub("github.com", prefix)
+					end
+				end
+				require("nvim-treesitter").install(opts.ensure_installed)
+			end,
 		})
-		require("nvim-treesitter").install(opts.ensure_installed)
 	end,
 }

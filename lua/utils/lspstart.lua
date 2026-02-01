@@ -26,8 +26,33 @@ local lsp_config = {
 			},
 		},
 	},
-	pyright = {},
-	julials = {},
+	basedpyright = {
+		settings = {
+			pyright = {
+				disableOrganizeImports = true,
+			},
+			python = {
+				analysis = { ignore = { "*" } },
+			},
+		},
+	},
+	ruff = {
+		on_attach = function(client, _)
+			client.server_capabilities.hoverProvider = false
+		end,
+	},
+	julials = {
+		cmd = {
+			"julia",
+			"--startup-file=no",
+			"--history-file=no",
+			"-e",
+			[[
+         using LanguageServer;
+         runserver()
+      ]],
+		},
+	},
 	nixd = {
 		filetypes = { "nix" },
 		cmd = { "nixd" },
@@ -58,6 +83,8 @@ local lsp_config = {
 			formatterMode = "typstyle",
 			exportPdf = "never",
 			semanticTokens = "disable",
+			lint = { enabled = true },
+			typstExtraArgs = { "--no-pdf-tags" },
 		},
 	},
 	rust_analyzer = {},
