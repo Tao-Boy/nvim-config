@@ -26,7 +26,7 @@ local lsp_config = {
 			},
 		},
 	},
-	basedpyright = {
+	pyright = {
 		settings = {
 			pyright = {
 				disableOrganizeImports = true,
@@ -35,11 +35,6 @@ local lsp_config = {
 				analysis = { ignore = { "*" } },
 			},
 		},
-	},
-	ruff = {
-		on_attach = function(client, _)
-			client.server_capabilities.hoverProvider = false
-		end,
 	},
 	julials = {
 		cmd = {

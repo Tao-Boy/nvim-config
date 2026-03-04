@@ -24,7 +24,7 @@ local keymap = {
 	{ "<C-j>", "<C-w>j", mode = mode_nit, desc = "Move to bottom window" },
 	{ "<C-k>", "<C-w>k", mode = mode_nit, desc = "Move to top window" },
 	{ "<C-l>", "<C-w>l", mode = mode_nit, desc = "Move to right window" },
-  { "<leader><S-Up>", "<cmd>res +5<CR>", mode = mode_n, desc = "Increase window height" },
+	{ "<leader><S-Up>", "<cmd>res +5<CR>", mode = mode_n, desc = "Increase window height" },
 	{ "<leader><S-Down>", "<cmd>res -5<CR>", mode = mode_n, desc = "Decrease window height" },
 	{ "<leader><S-Left>", "<cmd>vertical resize -5<CR>", mode = mode_n, desc = "Decrease window width" },
 	{ "<leader><S-Right>", "<cmd>vertical resize +5<CR>", mode = mode_n, desc = "Increase window width" },
@@ -59,5 +59,3 @@ add_textobject({
 	["al"] = "@loop.outer",
 	["il"] = "@loop.inner",
 })
-
-vim.keymap.set('n', '<Tab>', 'za', { noremap = true, silent = true, desc = 'Toggle code fold' })

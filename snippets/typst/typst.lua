@@ -6,9 +6,6 @@ local i = ls.insert_node
 local f = ls.function_node
 local c = ls.choice_node
 local fmta = require("luasnip.extras.fmt").fmta
-local rep = require("luasnip.extras").rep
-local line_begin = require("luasnip.extras.expand_conditions").line_begin
-
 local typst = require("utils.functions")
 
 local math_symbols = {
@@ -188,7 +185,7 @@ local math_symbols = {
 		{ condition = typst.in_typ_mathzone }
 	),
 	s({ trig = "cc", snippetType = "autosnippet" }, { t("^c") }, { condition = typst.in_typ_mathzone }),
-	s({ trig = "++", snippetType = "autosnippet" }, { t("^((+))") }, { condition = typst.in_typ_mathzone }),
+	s({ trig = "++", snippetType = "autosnippet", wordTrig = false }, { t("^((+))") }, { condition = typst.in_typ_mathzone }),
 	s(
 		{ trig = "--", snippetType = "autosnippet", priority = 2000 },
 		{ t("^((-))") },
@@ -392,6 +389,8 @@ local math_commands = {
 	),
 
 	s({ trig = "hat", snippetType = "autosnippet" }, fmta("hat(<>)", { i(1) }), { condition = typst.in_typ_mathzone }),
+
+	s({ trig = "bd", snippetType = "autosnippet" }, fmta("bold(<>)", { i(1) }), { condition = typst.in_typ_mathzone }),
 
 	s(
 		{ trig = "ub", snippetType = "autosnippet", priority = 2000 },

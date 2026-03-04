@@ -27,12 +27,12 @@ return {
 		completion = {
 			menu = {
 				max_height = 8,
-				border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
+				border = "rounded",
 				winhighlight = "Normal:None,FloatBorder:None,CursorLine:BlinkCmpMenuSelection,Search:None",
 				scrollbar = false,
 				draw = {
 					treesitter = { "lsp" },
-					columns = { { "kind_icon" }, { "label", gap = 1 } },
+					columns = { { "label", gap = 1 }, { "kind_icon" } },
 					components = {
 						label = {
 							text = function(ctx)
@@ -51,13 +51,13 @@ return {
 			documentation = {
 				auto_show = true,
 				window = {
-					border = "single",
+					border = "rounded",
 					scrollbar = false,
 				},
 			},
 			accept = {
 				auto_brackets = {
-					enabled = true,
+					enabled = false,
 				},
 			},
 			trigger = {
@@ -68,7 +68,7 @@ return {
 		signature = {
 			enabled = true,
 			window = {
-				border = "single",
+				border = "rounded",
 			},
 		},
 		sources = {

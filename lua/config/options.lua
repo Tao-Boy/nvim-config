@@ -56,11 +56,13 @@ vim.opt.shada = "'100,<50,s10,h" -- ShaDa file configuration
 
 -- Folding
 vim.o.foldmethod = "expr" -- Folding method is expr
+vim.o.foldenable = false -- Disable folding
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.o.foldenable = true -- Enable folding
 vim.o.foldlevel = 99 -- Folding level
-vim.o.foldlevelstart = -1 -- Initial folding level
-vim.o.foldcolumn = "1" -- Width of the fold column
+vim.o.foldlevelstart = 1 -- Initial folding level
+vim.o.foldcolumn = "0" -- Width of the fold column
+vim.opt.foldtext = "" -- Fold text
+vim.opt.foldnestmax = 4 -- Maximum fold nesting
 
 -- Completion and input
 vim.opt.completeopt = { "menu", "menuone", "noselect" } -- Completion options

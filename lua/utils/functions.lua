@@ -5,6 +5,22 @@ local current_os = jit.os:lower()
 local current_arch = jit.arch:lower()
 local gh_proxy = vim.g.gh_proxy or ""
 
+local function trim(text)
+	return (text or ""):gsub("^%s+", ""):gsub("%s+$", "")
+end
+
+local function with_gh_proxy(url)
+	if gh_proxy == "" then
+		return url
+	end
+	return (url:gsub("^https://github%.com/", "https://" .. gh_proxy .. "github.com/"))
+end
+
+local function run_command(cmd)
+	local output = vim.fn.system(cmd)
+	return vim.v.shell_error == 0, output
+end
+
 local function normalize_arch(arch)
 	if arch == "x64" or arch == "amd64" then
 		return "x86_64"
@@ -47,6 +63,140 @@ local function quote_path(path)
 		-- Unix shells use single quotes
 		return "'" .. path .. "'"
 	end
+end
+
+M.download = function(opts)
+	local source_name = opts.source_name or "download"
+	local url = opts.url
+	local target_file = opts.target_file
+	local curl_flags = "-fL --retry 3 --connect-timeout 10"
+
+	local primary_url = opts.use_proxy == false and url or with_gh_proxy(url)
+	local ok, output = run_command(string.format("curl %s -o %s %s", curl_flags, quote_path(target_file), quote_path(primary_url)))
+
+	if ok then
+		return true
+	end
+
+	if primary_url ~= url then
+		ok, output = run_command(string.format("curl %s -o %s %s", curl_flags, quote_path(target_file), quote_path(url)))
+		if ok then
+			return true
+		end
+	end
+
+	vim.notify(source_name .. ": download failed\n" .. trim(output), vim.log.levels.ERROR)
+	return false, output
+end
+
+local function avante_fallback_build(plugin)
+	vim.notify("avante: fallback to make", vim.log.levels.WARN)
+	local ok, output = run_command(string.format("make -C %s", quote_path(plugin.dir)))
+	if not ok then
+		vim.notify("avante: make failed\n" .. trim(output), vim.log.levels.ERROR)
+	end
+	return ok
+end
+
+M.avante = function(plugin)
+	if current_os == "windows" then
+		local cmd = string.format(
+			"cd %s && powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false",
+			quote_path(plugin.dir)
+		)
+		local ok, output = run_command(cmd)
+		if not ok then
+			vim.notify("avante: windows build failed\n" .. trim(output), vim.log.levels.ERROR)
+		end
+		return
+	end
+
+	local platform = current_os == "linux" and "linux" or (current_os == "osx" and "darwin" or nil)
+	local arch = normalize_arch(current_arch)
+	if not platform or (arch ~= "x86_64" and arch ~= "aarch64") then
+		vim.notify("avante: no prebuilt binary for " .. current_os .. "/" .. current_arch, vim.log.levels.WARN)
+		avante_fallback_build(plugin)
+		return
+	end
+
+	local target_dir = plugin.dir .. "/build"
+	local tag_file = target_dir .. "/.tag"
+	if vim.fn.isdirectory(target_dir) == 0 then
+		vim.fn.mkdir(target_dir, "p")
+	end
+
+	run_command(string.format("git -C %s fetch --tags origin", quote_path(plugin.dir)))
+	local ok_tag, latest_tag_output = run_command(string.format("git -C %s describe --tags --abbrev=0", quote_path(plugin.dir)))
+	local latest_tag = trim(latest_tag_output)
+	if not ok_tag or latest_tag == "" then
+		vim.notify("avante: unable to resolve release tag", vim.log.levels.WARN)
+		avante_fallback_build(plugin)
+		return
+	end
+
+	local built_tag = ""
+	if vim.fn.filereadable(tag_file) == 1 then
+		built_tag = trim((vim.fn.readfile(tag_file)[1] or ""))
+	end
+
+	if built_tag == latest_tag then
+		vim.notify("avante: local build is up to date " .. latest_tag, vim.log.levels.INFO)
+		return
+	end
+
+	local api_url = "https://api.github.com/repos/yetone/avante.nvim/releases/tags/" .. latest_tag
+	local ok_api, release_json = run_command("curl -fsSL " .. quote_path(api_url))
+	if not ok_api then
+		vim.notify("avante: fetch release metadata failed", vim.log.levels.WARN)
+		avante_fallback_build(plugin)
+		return
+	end
+
+	local ok_decode, release = pcall(vim.json.decode, release_json)
+	if not ok_decode or type(release) ~= "table" then
+		vim.notify("avante: decode release metadata failed", vim.log.levels.WARN)
+		avante_fallback_build(plugin)
+		return
+	end
+
+	local pattern = "avante_lib-" .. platform .. "-" .. arch .. "-luajit"
+	local artifact_url
+	for _, asset in ipairs(release.assets or {}) do
+		local browser_download_url = asset.browser_download_url
+		if type(browser_download_url) == "string" and browser_download_url:find(pattern, 1, true) then
+			artifact_url = browser_download_url
+			break
+		end
+	end
+
+	if not artifact_url then
+		vim.notify("avante: no matching prebuilt asset", vim.log.levels.WARN)
+		avante_fallback_build(plugin)
+		return
+	end
+
+	local archive_file = target_dir .. "/" .. pattern .. ".tar.gz"
+	vim.notify("avante: downloading prebuilt binaries ...", vim.log.levels.INFO)
+	local ok_download = M.download({
+		url = artifact_url,
+		target_file = archive_file,
+		source_name = "avante",
+	})
+	if not ok_download then
+		avante_fallback_build(plugin)
+		return
+	end
+
+	local ok_extract, extract_output = run_command(string.format("tar -xzf %s -C %s", quote_path(archive_file), quote_path(target_dir)))
+	vim.fn.delete(archive_file)
+	if not ok_extract then
+		vim.notify("avante: extract failed\n" .. trim(extract_output), vim.log.levels.WARN)
+		avante_fallback_build(plugin)
+		return
+	end
+
+	vim.fn.writefile({ latest_tag }, tag_file)
+	vim.notify("avante: prebuilt binaries ready " .. latest_tag, vim.log.levels.INFO)
 end
 
 -- autocmds

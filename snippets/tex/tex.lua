@@ -637,8 +637,8 @@ local math_fonts = {
 	),
 
 	s(
-		{ trig = "bs", snippetType = "autosnippet" },
-		fmta("\\boldsymbol{<>}", { i(1) }),
+		{ trig = "bm", snippetType = "autosnippet" },
+		fmta("\\bm{<>}", { i(1) }),
 		{ condition = tex.in_tex_mathzone }
 	),
 	s(
@@ -1196,19 +1196,19 @@ local physics_braket = {
 	-- Paired delimiters
 	s(
 		{ trig = "lrs", wordTrig = false, snippetType = "autosnippet", priority = 1000 },
-		fmta("\\left( <> \\right)", { i(1) }),
+		fmta("{\\left( <> \\right)}", { i(1) }),
 		{ condition = tex.in_tex_mathzone }
 	),
 
 	s(
 		{ trig = "lrb", wordTrig = false, snippetType = "autosnippet", priority = 1000 },
-		fmta("\\left\\{ <> \\right\\}", { i(1) }),
+		fmta("{\\left\\{ <> \\right\\}}", { i(1) }),
 		{ condition = tex.in_tex_mathzone }
 	),
 
 	s(
 		{ trig = "lrm", wordTrig = false, snippetType = "autosnippet", priority = 1000 },
-		fmta("\\left[ <> \\right]", { i(1) }),
+		fmta("{\\left[ <> \\right]}", { i(1) }),
 		{ condition = tex.in_tex_mathzone }
 	),
 
