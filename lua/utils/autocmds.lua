@@ -17,7 +17,7 @@ local opts = {
 				end
 				set("gr", vim.lsp.buf.references, "[R]eferences")
 				set("gi", vim.lsp.buf.implementation, "[I]mplementations")
-				set("gk", vim.lsp.buf.signature_help, "LSP Signature help")
+				set("gK", vim.lsp.buf.signature_help, "LSP Signature help")
 				set("gt", vim.lsp.buf.type_definition, "Goto T[y]pe Definition")
 				set("gD", vim.lsp.buf.declaration, "[D]oc symbols")
 				set("gd", vim.lsp.buf.definition, "definition")
@@ -34,16 +34,10 @@ local opts = {
 			end
 		end,
 	},
-	no_comment = {
-		event = "FileType",
-		pattern = "*",
-		desc = "set no comment in next line",
-		command = "set formatoptions-=ro",
-	},
 	auto_wrap = {
 		event = "FileType",
-		desc = "set wrap only for markdown, typst, latex and codecompanion",
-		pattern = { "markdown", "markdown.mdx", "typst", "tex", "codecompanion" },
+		desc = "set wrap only for markdown, typst and latex",
+		pattern = { "markdown", "markdown.mdx", "typst", "tex" },
 		command = "setlocal wrap",
 	},
 	highlight_yank = {
@@ -54,34 +48,16 @@ local opts = {
 		end,
 	},
 	q_close_windows = {
-		event = "BufWinEnter",
-		desc = "Make q close help, man, quickfix, dap floats",
+		event = "FileType",
+		pattern = { "help", "qf" },
+		desc = "Make q close help and quickfix windows",
 		callback = function(args)
-			-- Add cache for buffers that have already had mappings created
-			if not vim.g.q_close_windows then
-				vim.g.q_close_windows = {}
-			end
-			-- If the buffer has been checked already, skip
-			if vim.g.q_close_windows[args.buf] then
-				return
-			end
-			-- Mark the buffer as checked
-			vim.g.q_close_windows[args.buf] = true
-			-- Check to see if `q` is already mapped to the buffer (avoids overwriting)
-			for _, map in ipairs(vim.api.nvim_buf_get_keymap(args.buf, "n")) do
-				if map.lhs == "q" then
-					return
-				end
-			end
-			-- If there is no q mapping already and the buftype is a non-real file, create one
-			if vim.tbl_contains({ "help", "nofile", "quickfix" }, vim.bo[args.buf].buftype) then
-				vim.keymap.set("n", "q", "<Cmd>close<CR>", {
-					desc = "Close window",
-					buffer = args.buf,
-					silent = true,
-					nowait = true,
-				})
-			end
+			vim.keymap.set("n", "q", "<Cmd>close<CR>", {
+				desc = "Close window",
+				buffer = args.buf,
+				silent = true,
+				nowait = true,
+			})
 		end,
 	},
 	diag_in_select = {

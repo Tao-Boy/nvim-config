@@ -21,6 +21,7 @@ require("lazy").setup({
 	ui = { border = "rounded", backdrop = 100 },
 	performance = {
 		cache = { enabled = true },
+		profile = true,
 		reset_packpath = true,
 		throttle = {
 			enabled = true,

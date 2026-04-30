@@ -89,116 +89,6 @@ M.download = function(opts)
 	return false, output
 end
 
-local function avante_fallback_build(plugin)
-	vim.notify("avante: fallback to make", vim.log.levels.WARN)
-	local ok, output = run_command(string.format("make -C %s", quote_path(plugin.dir)))
-	if not ok then
-		vim.notify("avante: make failed\n" .. trim(output), vim.log.levels.ERROR)
-	end
-	return ok
-end
-
-M.avante = function(plugin)
-	if current_os == "windows" then
-		local cmd = string.format(
-			"cd %s && powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false",
-			quote_path(plugin.dir)
-		)
-		local ok, output = run_command(cmd)
-		if not ok then
-			vim.notify("avante: windows build failed\n" .. trim(output), vim.log.levels.ERROR)
-		end
-		return
-	end
-
-	local platform = current_os == "linux" and "linux" or (current_os == "osx" and "darwin" or nil)
-	local arch = normalize_arch(current_arch)
-	if not platform or (arch ~= "x86_64" and arch ~= "aarch64") then
-		vim.notify("avante: no prebuilt binary for " .. current_os .. "/" .. current_arch, vim.log.levels.WARN)
-		avante_fallback_build(plugin)
-		return
-	end
-
-	local target_dir = plugin.dir .. "/build"
-	local tag_file = target_dir .. "/.tag"
-	if vim.fn.isdirectory(target_dir) == 0 then
-		vim.fn.mkdir(target_dir, "p")
-	end
-
-	run_command(string.format("git -C %s fetch --tags origin", quote_path(plugin.dir)))
-	local ok_tag, latest_tag_output = run_command(string.format("git -C %s describe --tags --abbrev=0", quote_path(plugin.dir)))
-	local latest_tag = trim(latest_tag_output)
-	if not ok_tag or latest_tag == "" then
-		vim.notify("avante: unable to resolve release tag", vim.log.levels.WARN)
-		avante_fallback_build(plugin)
-		return
-	end
-
-	local built_tag = ""
-	if vim.fn.filereadable(tag_file) == 1 then
-		built_tag = trim((vim.fn.readfile(tag_file)[1] or ""))
-	end
-
-	if built_tag == latest_tag then
-		vim.notify("avante: local build is up to date " .. latest_tag, vim.log.levels.INFO)
-		return
-	end
-
-	local api_url = "https://api.github.com/repos/yetone/avante.nvim/releases/tags/" .. latest_tag
-	local ok_api, release_json = run_command("curl -fsSL " .. quote_path(api_url))
-	if not ok_api then
-		vim.notify("avante: fetch release metadata failed", vim.log.levels.WARN)
-		avante_fallback_build(plugin)
-		return
-	end
-
-	local ok_decode, release = pcall(vim.json.decode, release_json)
-	if not ok_decode or type(release) ~= "table" then
-		vim.notify("avante: decode release metadata failed", vim.log.levels.WARN)
-		avante_fallback_build(plugin)
-		return
-	end
-
-	local pattern = "avante_lib-" .. platform .. "-" .. arch .. "-luajit"
-	local artifact_url
-	for _, asset in ipairs(release.assets or {}) do
-		local browser_download_url = asset.browser_download_url
-		if type(browser_download_url) == "string" and browser_download_url:find(pattern, 1, true) then
-			artifact_url = browser_download_url
-			break
-		end
-	end
-
-	if not artifact_url then
-		vim.notify("avante: no matching prebuilt asset", vim.log.levels.WARN)
-		avante_fallback_build(plugin)
-		return
-	end
-
-	local archive_file = target_dir .. "/" .. pattern .. ".tar.gz"
-	vim.notify("avante: downloading prebuilt binaries ...", vim.log.levels.INFO)
-	local ok_download = M.download({
-		url = artifact_url,
-		target_file = archive_file,
-		source_name = "avante",
-	})
-	if not ok_download then
-		avante_fallback_build(plugin)
-		return
-	end
-
-	local ok_extract, extract_output = run_command(string.format("tar -xzf %s -C %s", quote_path(archive_file), quote_path(target_dir)))
-	vim.fn.delete(archive_file)
-	if not ok_extract then
-		vim.notify("avante: extract failed\n" .. trim(extract_output), vim.log.levels.WARN)
-		avante_fallback_build(plugin)
-		return
-	end
-
-	vim.fn.writefile({ latest_tag }, tag_file)
-	vim.notify("avante: prebuilt binaries ready " .. latest_tag, vim.log.levels.INFO)
-end
-
 -- autocmds
 function M.loadAutocmd(opts)
 	for augroup, autocmds in pairs(opts) do
@@ -327,6 +217,32 @@ end
 
 M.in_typ_text = function()
 	return not M.in_typ_mathzone()
+end
+
+M.in_md_mathzone = function()
+	local math_types = { latex_span = true, latex_block = true }
+	local ok, node = pcall(vim.treesitter.get_node, { ignore_injections = false })
+	if ok and node then
+		while node do
+			if math_types[node:type()] then
+				return true
+			end
+			node = node:parent()
+		end
+		return false
+	end
+	-- Fallback when treesitter is unavailable: count $ before cursor on this line
+	local line = vim.api.nvim_get_current_line()
+	local col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- 1-indexed column
+	local dollars = 0
+	for _ in line:sub(1, col):gmatch("%$") do
+		dollars = dollars + 1
+	end
+	return dollars % 2 == 1
+end
+
+M.in_md_text = function()
+	return not M.in_md_mathzone()
 end
 
 return M

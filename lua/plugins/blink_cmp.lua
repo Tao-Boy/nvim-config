@@ -1,5 +1,6 @@
 return {
 	"saghen/blink.cmp",
+	version = "1.*",
 	event = { "InsertEnter", "CmdlineEnter", "User AfterLoad" },
 	build = function(plugin)
 		require("utils.functions").blink_cmp(plugin)
@@ -72,12 +73,8 @@ return {
 			},
 		},
 		sources = {
-			default = { "lsp", "path", "buffer", "lazydev" },
+			default = { "lsp", "path", "buffer" },
 			providers = {
-				lazydev = {
-					name = "Development",
-					module = "lazydev.integrations.blink",
-				},
 				lsp = {
 					fallbacks = { "buffer" },
 					transform_items = function(_, items)
@@ -95,6 +92,7 @@ return {
 		fuzzy = {
 			implementation = "prefer_rust_with_warning",
 			prebuilt_binaries = {
+				-- build function in functions.lua handles download via gh_proxy
 				download = false,
 				ignore_version_mismatch = true,
 			},

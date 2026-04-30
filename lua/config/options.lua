@@ -1,6 +1,10 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+vim.g.gh_proxy = "gh-proxy.com/"
+
 require("utils.autocmds")
--- Editor appearance
 vim.cmd.colorscheme("catppuccin")
+
 vim.opt.background = "dark" -- Set background to dark
 vim.opt.termguicolors = true -- Enable true color support
 vim.opt.cursorline = true -- enable highlighting of the current line
@@ -8,7 +12,7 @@ vim.opt.signcolumn = "yes" -- Always show the sign column
 vim.opt.fillchars = { eob = " ", diff = "\u{2591}" } -- Set fill characters (end of buffer and diff)
 vim.opt.list = false -- Disable showing whitespace characters
 vim.opt.wrap = false -- Disable automatic line wrapping
-vim.opt.linebreak = true -- Wrap lines at word boundaries
+vim.opt.formatoptions:remove({ "r", "o" }) -- Disable comment continuation
 vim.opt.conceallevel = 0 -- Disable text concealment
 vim.opt.pumblend = 20 -- Popup menu transparency
 require("utils.highlights")
@@ -31,8 +35,8 @@ vim.opt.showcmd = false -- Disable showing command in bottom bar
 vim.opt.showmode = false -- Disable showing mode in bottom bar
 
 -- Indentation and tabs
-vim.opt.tabstop = 2 -- Tab width is 2 spaces
-vim.opt.shiftwidth = 2 -- Indent width is 2 spaces
+vim.opt.tabstop = 4 -- Tab width is 2 spaces
+vim.opt.shiftwidth = 4 -- Indent width is 2 spaces
 vim.opt.expandtab = true -- Use spaces instead of tabs
 vim.opt.smartindent = true -- Enable smart indentation
 
@@ -71,10 +75,11 @@ vim.opt.timeoutlen = 400 -- Timeout for key mappings (ms)
 
 -- Mouse
 vim.opt.mouse = "a" -- Enable mouse support in all modes
-vim.opt.mousemoveevent = true -- Enable mouse move events
 
 -- Clipboard
-vim.opt.clipboard = "unnamedplus" -- Use system clipboard
+vim.schedule(function()
+	vim.opt.clipboard = "unnamedplus" -- Use system clipboard
+end)
 
 -- Spelling and encoding
 vim.opt.spell = false -- Disable spell checking

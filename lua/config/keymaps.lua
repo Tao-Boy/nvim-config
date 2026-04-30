@@ -1,5 +1,5 @@
 local mode_n, mode_v, mode_i, mode_o, mode_s, mode_t = { "n" }, { "v" }, { "i" }, { "o" }, { "s" }, { "t" }
-local mode_nv, mode_ni, mode_nit, mode_nvo = { "n", "v" }, { "n", "i" }, { "n", "i", "v" }, { "n", "v", "o" }
+local mode_nv, mode_ni, mode_niv, mode_nvo = { "n", "v" }, { "n", "i" }, { "n", "i", "v" }, { "n", "v", "o" }
 
 local function add_textobject(mp)
 	for lhs, obj in pairs(mp) do
@@ -20,10 +20,10 @@ local keymap = {
 	{ "J", ":m '>+1<cr>gv=gv", mode = mode_v, desc = "Move selected lines down" },
 	{ "<Tab>", "za", mode = mode_n, desc = "Toggle code fold" },
 	{ "<C-a>", "<cmd>normal gg0vG$<CR>", mode = mode_ni, desc = "Select entire buffer" },
-	{ "<C-h>", "<C-w>h", mode = mode_nit, desc = "Move to left window" },
-	{ "<C-j>", "<C-w>j", mode = mode_nit, desc = "Move to bottom window" },
-	{ "<C-k>", "<C-w>k", mode = mode_nit, desc = "Move to top window" },
-	{ "<C-l>", "<C-w>l", mode = mode_nit, desc = "Move to right window" },
+	{ "<C-h>", "<C-w>h", mode = mode_niv, desc = "Move to left window" },
+	{ "<C-j>", "<C-w>j", mode = mode_niv, desc = "Move to bottom window" },
+	{ "<C-k>", "<C-w>k", mode = mode_niv, desc = "Move to top window" },
+	{ "<C-l>", "<C-w>l", mode = mode_niv, desc = "Move to right window" },
 	{ "<leader><S-Up>", "<cmd>res +5<CR>", mode = mode_n, desc = "Increase window height" },
 	{ "<leader><S-Down>", "<cmd>res -5<CR>", mode = mode_n, desc = "Decrease window height" },
 	{ "<leader><S-Left>", "<cmd>vertical resize -5<CR>", mode = mode_n, desc = "Decrease window width" },

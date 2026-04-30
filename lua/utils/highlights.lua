@@ -29,7 +29,6 @@ set_hl(0, "FoldColumn", { bg = "NONE" })
 
 -- Cursor
 set_hl(0, "CursorLine", { bg = "NONE" })
-set_hl(0, "CursorLineNr", { bg = "NONE" })
 
 -- WinBar
 set_hl(0, "WinBar", { bg = "NONE" })

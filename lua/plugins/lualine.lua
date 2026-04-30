@@ -7,7 +7,7 @@ local function get_lsp()
 	local buf_client_names = {}
 
 	for _, client in pairs(buf_clients) do
-		if client.name ~= "null-ls" and client.name ~= "copilot" then
+		if client.name ~= "null-ls" then
 			table.insert(buf_client_names, client.name)
 		end
 	end
@@ -19,17 +19,6 @@ local function get_lsp()
 	return language_servers
 end
 
-local function get_copilot_status()
-	local clients = vim.lsp.get_clients({ bufnr = 0 })
-
-	for _, client in ipairs(clients) do
-		if client.name == "copilot" then
-			return ""
-		end
-	end
-
-	return ""
-end
 
 local opts = {
 	options = {
@@ -68,7 +57,7 @@ local opts = {
 			},
 			"diagnostics",
 		},
-		lualine_x = { get_copilot_status, "filename" },
+		lualine_x = { "filename" },
 		lualine_y = { "filetype", "progress" },
 		lualine_z = { {
 			function()

@@ -636,11 +636,7 @@ local math_fonts = {
 		{ condition = tex.in_tex_mathzone }
 	),
 
-	s(
-		{ trig = "bm", snippetType = "autosnippet" },
-		fmta("\\bm{<>}", { i(1) }),
-		{ condition = tex.in_tex_mathzone }
-	),
+	s({ trig = "bm", snippetType = "autosnippet" }, fmta("\\bm{<>}", { i(1) }), { condition = tex.in_tex_mathzone }),
 	s(
 		{ trig = "bf", snippetType = "autosnippet" },
 		fmta("\\mathbf{<>}", { i(1) }),

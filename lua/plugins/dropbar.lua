@@ -13,7 +13,6 @@ return {
 					or not vim.api.nvim_win_is_valid(win)
 					or vim.fn.win_gettype(win) ~= ""
 					or vim.wo[win].winbar ~= ""
-					or vim.bo[buf].ft == "codecompanion"
 					or vim.bo[buf].ft == "help"
 					or vim.bo[buf].ft == ""
 				then

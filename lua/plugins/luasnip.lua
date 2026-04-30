@@ -2,7 +2,6 @@ return {
 	"L3MON4D3/LuaSnip",
 	version = "v2.*",
 	event = "User AfterLoad",
-	build = "make install_jsregexp",
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
 	},
