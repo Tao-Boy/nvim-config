@@ -60,5 +60,6 @@ vim.keymap.del("n", "grr")
 vim.keymap.del("n", "grt")
 
 vim.lsp.enable("lua_ls")
+vim.lsp.enable("ty")
 vim.lsp.enable("rust_analyzer")
 vim.lsp.enable("clangd")

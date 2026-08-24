@@ -93,7 +93,7 @@ return {
 			implementation = "prefer_rust_with_warning",
 			prebuilt_binaries = {
 				-- build function in functions.lua handles download via gh_proxy
-				download = false,
+				download = true,
 				ignore_version_mismatch = true,
 			},
 		},

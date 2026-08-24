@@ -143,36 +143,36 @@ M.blink_cmp = function(plugin)
 	})
 end
 
-M.blink_pairs = function(plugin)
-	local config = get_blink_config()
-	if not config then
-		vim.notify("blink-pairs: no prebuilt binary for " .. current_os .. "/" .. current_arch, vim.log.levels.WARN)
-		return
-	end
-	local base_url = "https://" .. gh_proxy .. "github.com/Saghen/blink.pairs/releases/latest/download/"
-	local download_url = base_url .. config.file
-
-	local target_dir = plugin.dir .. "/target/release"
-	local target_file = target_dir .. "/blink_pairs" .. config.ext
-
-	local curl_cmd = string.format("curl -Lo %s %s", quote_path(target_file), quote_path(download_url))
-
-	vim.notify("blink-pairs: downloading ...", vim.log.levels.INFO)
-
-	if vim.fn.isdirectory(target_dir) == 0 then
-		vim.fn.mkdir(target_dir, "p")
-	end
-
-	vim.fn.jobstart(curl_cmd, {
-		on_exit = function(_, exit_code)
-			if exit_code == 0 then
-				vim.notify("blink-pairs: download finished", vim.log.levels.INFO)
-			else
-				vim.notify("blink-pairs: download failed", vim.log.levels.ERROR)
-			end
-		end,
-	})
-end
+-- M.blink_pairs = function(plugin)
+-- 	local config = get_blink_config()
+-- 	if not config then
+-- 		vim.notify("blink-pairs: no prebuilt binary for " .. current_os .. "/" .. current_arch, vim.log.levels.WARN)
+-- 		return
+-- 	end
+-- 	local base_url = "https://" .. gh_proxy .. "github.com/Saghen/blink.pairs/releases/latest/download/"
+-- 	local download_url = base_url .. config.file
+--
+-- 	local target_dir = plugin.dir .. "/target/release"
+-- 	local target_file = target_dir .. "/blink_pairs" .. config.ext
+--
+-- 	local curl_cmd = string.format("curl -Lo %s %s", quote_path(target_file), quote_path(download_url))
+--
+-- 	vim.notify("blink-pairs: downloading ...", vim.log.levels.INFO)
+--
+-- 	if vim.fn.isdirectory(target_dir) == 0 then
+-- 		vim.fn.mkdir(target_dir, "p")
+-- 	end
+--
+-- 	vim.fn.jobstart(curl_cmd, {
+-- 		on_exit = function(_, exit_code)
+-- 			if exit_code == 0 then
+-- 				vim.notify("blink-pairs: download finished", vim.log.levels.INFO)
+-- 			else
+-- 				vim.notify("blink-pairs: download failed", vim.log.levels.ERROR)
+-- 			end
+-- 		end,
+-- 	})
+-- end
 
 M.in_tex_env = function(env)
 	local pos = vim.fn["vimtex#env#is_inside"](env)

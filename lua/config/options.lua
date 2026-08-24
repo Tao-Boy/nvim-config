@@ -1,6 +1,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.gh_proxy = "gh-proxy.com/"
+vim.g.gh_proxy = "gh.nullcode.cc/"
 
 require("utils.autocmds")
 vim.cmd.colorscheme("catppuccin")
