@@ -1,0 +1,126 @@
+{
+  "plugins": {
+    "LuaSnip": {
+      "rev": "642b0c595e11608b4c18219e93b88d7637af27bc",
+      "src": "https://gh.nullcode.cc/github.com/L3MON4D3/LuaSnip",
+      "version": "2.0.0 - 3.0.0"
+    },
+    "blink.cmp": {
+      "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
+      "src": "https://gh.nullcode.cc/github.com/saghen/blink.cmp",
+      "version": "1.0.0 - 2.0.0"
+    },
+    "bufferline.nvim": {
+      "rev": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3",
+      "src": "https://gh.nullcode.cc/github.com/akinsho/bufferline.nvim"
+    },
+    "conform.nvim": {
+      "rev": "016802de402556da54c36bd7359b441266b01cdd",
+      "src": "https://gh.nullcode.cc/github.com/stevearc/conform.nvim"
+    },
+    "dropbar.nvim": {
+      "rev": "f7c6fa21e2a7c32576e7a1791774a3736987f467",
+      "src": "https://gh.nullcode.cc/github.com/Bekaboo/dropbar.nvim"
+    },
+    "flash.nvim": {
+      "rev": "5f0f270fdc7c5b0c21d903ee85b9cb06f2ac636a",
+      "src": "https://gh.nullcode.cc/github.com/folke/flash.nvim"
+    },
+    "lualine.nvim": {
+      "rev": "221ce6b2d999187044529f49da6554a92f740a96",
+      "src": "https://gh.nullcode.cc/github.com/nvim-lualine/lualine.nvim"
+    },
+    "noice.nvim": {
+      "rev": "7bfd942445fb63089b59f97ca487d605e715f155",
+      "src": "https://gh.nullcode.cc/github.com/folke/noice.nvim"
+    },
+    "nui.nvim": {
+      "rev": "10fc361835c856ba4233ef5ea135b919bf3dce97",
+      "src": "https://gh.nullcode.cc/github.com/MunifTanjim/nui.nvim"
+    },
+    "nvim-autopairs": {
+      "rev": "3172f40c16563db871a58f20d205c710ad782311",
+      "src": "https://gh.nullcode.cc/github.com/windwp/nvim-autopairs"
+    },
+    "nvim-web-devicons": {
+      "rev": "ec309a0eaff6ea967e58c275996155ab5c16938d",
+      "src": "https://gh.nullcode.cc/github.com/nvim-tree/nvim-web-devicons"
+    },
+    "oil.nvim": {
+      "rev": "d3733d933833a0e59b813ecec99341527adf0c28",
+      "src": "https://gh.nullcode.cc/github.com/stevearc/oil.nvim"
+    },
+    "outline.nvim": {
+      "rev": "d8e48fe265fa9c33364809bf9cf32a1f032a8ac1",
+      "src": "https://gh.nullcode.cc/github.com/hedyhli/outline.nvim"
+    },
+    "persistence.nvim": {
+      "rev": "b20b2a7887bd39c1a356980b45e03250f3dce49c",
+      "src": "https://gh.nullcode.cc/github.com/folke/persistence.nvim"
+    },
+    "snacks.nvim": {
+      "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
+      "src": "https://gh.nullcode.cc/github.com/folke/snacks.nvim"
+    },
+    "toggleterm.nvim": {
+      "rev": "9a88eae817ef395952e08650b3283726786fb5fb",
+      "src": "https://gh.nullcode.cc/github.com/akinsho/toggleterm.nvim"
+    },
+    "tree-sitter-bash": {
+      "rev": "a06c2e4415e9bc0346c6b86d401879ffb44058f7",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter/tree-sitter-bash"
+    },
+    "tree-sitter-cpp": {
+      "rev": "c009222808634c1014f82438d4883753516a2c24",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter/tree-sitter-cpp"
+    },
+    "tree-sitter-css": {
+      "rev": "dda5cfc5722c429eaba1c910ca32c2c0c5bb1a3f",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter/tree-sitter-css"
+    },
+    "tree-sitter-html": {
+      "rev": "73a3947324f6efddf9e17c0ea58d454843590cc0",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter/tree-sitter-html"
+    },
+    "tree-sitter-json": {
+      "rev": "254c42a6476413b776221e03982ac8ae159eeb72",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter/tree-sitter-json"
+    },
+    "tree-sitter-nix": {
+      "rev": "32c3ce98afdafc2ec9aedf0280a678750f76254c",
+      "src": "https://gh.nullcode.cc/github.com/nix-community/tree-sitter-nix"
+    },
+    "tree-sitter-python": {
+      "rev": "26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter/tree-sitter-python"
+    },
+    "tree-sitter-rust": {
+      "rev": "77a3747266f4d621d0757825e6b11edcbf991ca5",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter/tree-sitter-rust"
+    },
+    "tree-sitter-toml": {
+      "rev": "64b56832c2cffe41758f28e05c756a3a98d16f41",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter-grammars/tree-sitter-toml"
+    },
+    "tree-sitter-typst": {
+      "rev": "46cf4ded12ee974a70bf8457263b67ad7ee0379d",
+      "src": "https://gh.nullcode.cc/github.com/uben0/tree-sitter-typst"
+    },
+    "tree-sitter-yaml": {
+      "rev": "a1c4812a73ec5e089de8e441fdea3a921e8d5079",
+      "src": "https://gh.nullcode.cc/github.com/tree-sitter-grammars/tree-sitter-yaml"
+    },
+    "typst-preview.nvim": {
+      "rev": "1c2e19486397be1c580b560fc50ee36abe329c46",
+      "src": "https://gh.nullcode.cc/github.com/chomosuke/typst-preview.nvim"
+    },
+    "vimtex": {
+      "rev": "98615cefc441aaa5721c144ecfeacddcdf78816d",
+      "src": "https://gh.nullcode.cc/github.com/lervag/vimtex"
+    },
+    "which-key.nvim": {
+      "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
+      "src": "https://gh.nullcode.cc/github.com/folke/which-key.nvim"
+    }
+  }
+}

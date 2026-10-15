@@ -1,179 +1,60 @@
 local M = {}
 
--- Download utilities from download.lua
-local current_os = jit.os:lower()
-local current_arch = jit.arch:lower()
-local gh_proxy = vim.g.gh_proxy or ""
-
-local function trim(text)
-	return (text or ""):gsub("^%s+", ""):gsub("%s+$", "")
-end
-
-local function with_gh_proxy(url)
-	if gh_proxy == "" then
-		return url
-	end
-	return (url:gsub("^https://github%.com/", "https://" .. gh_proxy .. "github.com/"))
-end
-
-local function run_command(cmd)
-	local output = vim.fn.system(cmd)
-	return vim.v.shell_error == 0, output
-end
-
-local function normalize_arch(arch)
-	if arch == "x64" or arch == "amd64" then
-		return "x86_64"
-	end
-	if arch == "arm64" then
-		return "aarch64"
-	end
-	return arch
-end
-
-local blink_map = {
-	linux = {
-		x86_64 = { file = "x86_64-unknown-linux-gnu.so", ext = ".so" },
-		aarch64 = { file = "aarch64-unknown-linux-gnu.so", ext = ".so" },
-	},
-	windows = {
-		x86_64 = { file = "x86_64-pc-windows-msvc.dll", ext = ".dll" },
-		aarch64 = { file = "aarch64-pc-windows-msvc.dll", ext = ".dll" },
-	},
-	osx = {
-		x86_64 = { file = "x86_64-apple-darwin.dylib", ext = ".dylib" },
-		aarch64 = { file = "aarch64-apple-darwin.dylib", ext = ".dylib" },
-	},
+---------------------------------------------------------------------------
+-- blink.cmp prebuilt fuzzy-matcher binary (downloaded through vim.g.gh_proxy)
+---------------------------------------------------------------------------
+local blink_targets = {
+	linux = { x64 = "x86_64-unknown-linux-gnu", arm64 = "aarch64-unknown-linux-gnu", ext = ".so" },
+	osx = { x64 = "x86_64-apple-darwin", arm64 = "aarch64-apple-darwin", ext = ".dylib" },
+	windows = { x64 = "x86_64-pc-windows-msvc", arm64 = "aarch64-pc-windows-msvc", ext = ".dll" },
 }
 
-local function get_blink_config()
-	local os_map = blink_map[current_os]
-	if not os_map then
-		return nil
-	end
-	return os_map[normalize_arch(current_arch)]
-end
-
--- Helper function to properly quote paths for shell commands
-local function quote_path(path)
-	if current_os == "windows" then
-		-- Windows cmd.exe requires double quotes
-		return '"' .. path .. '"'
-	else
-		-- Unix shells use single quotes
-		return "'" .. path .. "'"
-	end
-end
-
-M.download = function(opts)
-	local source_name = opts.source_name or "download"
-	local url = opts.url
-	local target_file = opts.target_file
-	local curl_flags = "-fL --retry 3 --connect-timeout 10"
-
-	local primary_url = opts.use_proxy == false and url or with_gh_proxy(url)
-	local ok, output = run_command(string.format("curl %s -o %s %s", curl_flags, quote_path(target_file), quote_path(primary_url)))
-
-	if ok then
-		return true
+--- Download the fuzzy-matcher library matching the checked out blink.cmp tag (async).
+---@param path string blink.cmp plugin directory
+M.blink_cmp = function(path)
+	local os_targets = blink_targets[jit.os:lower()]
+	local triple = os_targets and os_targets[jit.arch:lower()]
+	if not triple then
+		return vim.notify("blink.cmp: no prebuilt binary for " .. jit.os .. "/" .. jit.arch, vim.log.levels.WARN)
 	end
 
-	if primary_url ~= url then
-		ok, output = run_command(string.format("curl %s -o %s %s", curl_flags, quote_path(target_file), quote_path(url)))
-		if ok then
-			return true
-		end
-	end
+	local tag = vim.system({ "git", "describe", "--tags", "--exact-match", "HEAD" }, { cwd = path, text = true }):wait()
+	local release = tag.code == 0 and ("download/" .. vim.trim(tag.stdout)) or "latest/download"
+	local url = ("https://%sgithub.com/Saghen/blink.cmp/releases/%s/%s%s"):format(
+		vim.g.gh_proxy or "",
+		release,
+		triple,
+		os_targets.ext
+	)
+	local dir = path .. "/target/release"
+	vim.fn.mkdir(dir, "p")
 
-	vim.notify(source_name .. ": download failed\n" .. trim(output), vim.log.levels.ERROR)
-	return false, output
-end
-
--- autocmds
-function M.loadAutocmd(opts)
-	for augroup, autocmds in pairs(opts) do
-		if autocmds then
-			local augroup_id = vim.api.nvim_create_augroup(augroup, { clear = true })
-			local function load_autocmd(autocmd)
-				local event = autocmd.event
-				autocmd.event = nil
-				autocmd.group = augroup_id
-				vim.api.nvim_create_autocmd(event, autocmd)
-				autocmd.event = event
-			end
-			if #autocmds == 0 then
-				load_autocmd(autocmds)
-			end
-			for _, autocmd in ipairs(autocmds) do
-				load_autocmd(autocmd)
-			end
-		end
-	end
-end
-
--- Download functions
-M.blink_cmp = function(plugin)
-	local config = get_blink_config()
-	if not config then
-		vim.notify("Blink: no prebuilt binary for " .. current_os .. "/" .. current_arch, vim.log.levels.WARN)
-		return
-	end
-	local base_url = "https://" .. gh_proxy .. "github.com/Saghen/blink.cmp/releases/latest/download/"
-	local download_url = base_url .. config.file
-
-	local target_dir = plugin.dir .. "/target/release"
-	local target_file = target_dir .. "/libblink_cmp_fuzzy" .. config.ext
-
-	if vim.fn.isdirectory(target_dir) == 0 then
-		vim.fn.mkdir(target_dir, "p")
-	end
-
-	local curl_cmd = string.format("curl -Lo %s %s", quote_path(target_file), quote_path(download_url))
-
-	vim.notify("Blink: downloading ...", vim.log.levels.INFO)
-
-	vim.fn.jobstart(curl_cmd, {
-		on_exit = function(_, exit_code)
-			if exit_code == 0 then
-				vim.notify("Blink: download finished", vim.log.levels.INFO)
+	vim.notify("blink.cmp: downloading fuzzy library ...")
+	local cmd = {
+		"curl",
+		"-fL",
+		"--retry",
+		"3",
+		"--connect-timeout",
+		"10",
+		"-o",
+		dir .. "/libblink_cmp_fuzzy" .. os_targets.ext,
+		url,
+	}
+	vim.system(cmd, {}, function(res)
+		vim.schedule(function()
+			if res.code == 0 then
+				vim.notify("blink.cmp: download finished")
 			else
-				vim.notify("Blink: download failed", vim.log.levels.ERROR)
+				vim.notify("blink.cmp: download failed\n" .. (res.stderr or ""), vim.log.levels.ERROR)
 			end
-		end,
-	})
+		end)
+	end)
 end
 
--- M.blink_pairs = function(plugin)
--- 	local config = get_blink_config()
--- 	if not config then
--- 		vim.notify("blink-pairs: no prebuilt binary for " .. current_os .. "/" .. current_arch, vim.log.levels.WARN)
--- 		return
--- 	end
--- 	local base_url = "https://" .. gh_proxy .. "github.com/Saghen/blink.pairs/releases/latest/download/"
--- 	local download_url = base_url .. config.file
---
--- 	local target_dir = plugin.dir .. "/target/release"
--- 	local target_file = target_dir .. "/blink_pairs" .. config.ext
---
--- 	local curl_cmd = string.format("curl -Lo %s %s", quote_path(target_file), quote_path(download_url))
---
--- 	vim.notify("blink-pairs: downloading ...", vim.log.levels.INFO)
---
--- 	if vim.fn.isdirectory(target_dir) == 0 then
--- 		vim.fn.mkdir(target_dir, "p")
--- 	end
---
--- 	vim.fn.jobstart(curl_cmd, {
--- 		on_exit = function(_, exit_code)
--- 			if exit_code == 0 then
--- 				vim.notify("blink-pairs: download finished", vim.log.levels.INFO)
--- 			else
--- 				vim.notify("blink-pairs: download failed", vim.log.levels.ERROR)
--- 			end
--- 		end,
--- 	})
--- end
-
+---------------------------------------------------------------------------
+-- Snippet conditions
+---------------------------------------------------------------------------
 M.in_tex_env = function(env)
 	local pos = vim.fn["vimtex#env#is_inside"](env)
 	return pos[1] ~= 0 or pos[2] ~= 0
@@ -197,15 +78,19 @@ M.in_tex_tikz = function()
 	return M.in_tex_env("tikzpicture")
 end
 
+--- Fallback when no treesitter parser is available: odd number of `$` before the cursor
+local function odd_dollars_before_cursor()
+	local line = vim.api.nvim_get_current_line()
+	local col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- 1-indexed column
+	local _, dollars = line:sub(1, col):gsub("%$", "")
+	return dollars % 2 == 1
+end
+
 M.in_typ_mathzone = function()
-	local function node_at_cursor()
-		local ok, node = pcall(vim.treesitter.get_node, { ignore_injections = false })
-		if ok then
-			return node
-		end
-		return nil
+	local ok, node = pcall(vim.treesitter.get_node, { ignore_injections = false })
+	if not ok or not node then
+		return odd_dollars_before_cursor()
 	end
-	local node = node_at_cursor()
 	while node do
 		if node:type() == "math" then
 			return true
@@ -231,14 +116,7 @@ M.in_md_mathzone = function()
 		end
 		return false
 	end
-	-- Fallback when treesitter is unavailable: count $ before cursor on this line
-	local line = vim.api.nvim_get_current_line()
-	local col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- 1-indexed column
-	local dollars = 0
-	for _ in line:sub(1, col):gmatch("%$") do
-		dollars = dollars + 1
-	end
-	return dollars % 2 == 1
+	return odd_dollars_before_cursor()
 end
 
 M.in_md_text = function()
