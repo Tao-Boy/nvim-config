@@ -1,4 +1,9 @@
+-- Loaded right after the first real file has been drawn (see init.lua): `vim.lsp` and
+-- `vim.diagnostic` are not needed for the dashboard / an empty buffer, and servers take
+-- far longer to start than the one frame of delay.
 local icons = require("utils.custom").icons
+
+vim.lsp.log.set_level(vim.log.levels.OFF)
 
 -- Server configs live in `lsp/<name>.lua` and are picked up by vim.lsp.config automatically.
 vim.lsp.enable({ "lua_ls", "ty", "rust_analyzer", "clangd" })

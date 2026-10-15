@@ -6,6 +6,12 @@ vim.g.gh_proxy = "gh.nullcode.cc/"
 vim.g.no_plugin_maps = true
 vim.g.tex_flavor = "latex"
 
+-- No remote-plugin providers are used. Probing them is expensive: e.g. opening the first
+-- Python file runs the python3 provider check (~100ms) via ftplugin/python.vim.
+for _, provider in ipairs({ "node", "perl", "python3", "ruby" }) do
+	vim.g["loaded_" .. provider .. "_provider"] = 0
+end
+
 -- Disable unused built-in plugins (oil.nvim replaces netrw)
 for _, plugin in ipairs({
 	"gzip",
@@ -100,7 +106,5 @@ opt.iskeyword = "@,48-57,_,192-255,-"
 vim.schedule(function()
 	opt.clipboard = "unnamedplus"
 end)
-
-vim.lsp.log.set_level(vim.log.levels.OFF)
 
 vim.cmd.colorscheme("catppuccin") -- bundled with Neovim

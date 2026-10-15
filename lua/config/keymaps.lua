@@ -36,12 +36,9 @@ local keymaps = {
 	{ "<leader>bd", "<Cmd>bdelete<CR>", mode = n, desc = "Delete current buffer" },
 
 	-- Built-in tools
-	{ "<leader>u", "<Cmd>Undotree<CR>", mode = n, desc = "Undo tree" },
+	{ "<leader>u", "<Cmd>packadd nvim.undotree | Undotree<CR>", mode = n, desc = "Undo tree" },
 }
 
 for _, map in ipairs(keymaps) do
 	vim.keymap.set(map.mode, map[1], map[2], { silent = map.silent ~= false, desc = map.desc })
 end
-
--- `:Undotree` ships as an opt-in package
-vim.cmd.packadd("nvim.undotree")

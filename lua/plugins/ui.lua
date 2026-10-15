@@ -134,7 +134,7 @@ end)
 ---------------------------------------------------------------------------
 -- which-key.nvim
 ---------------------------------------------------------------------------
-load.later(function()
+load.on_file(function()
 	local wk = require("which-key")
 	wk.setup({
 		show_help = false,
@@ -215,8 +215,19 @@ load.on_file(function()
 end)
 
 ---------------------------------------------------------------------------
--- bufferline.nvim
+-- bufferline.nvim (set up after the first file is drawn; reserve its line meanwhile)
 ---------------------------------------------------------------------------
+load.on(
+	{ "BufReadPost", "BufNewFile" },
+	function()
+		vim.o.tabline = " "
+		vim.o.showtabline = 2
+	end,
+	nil,
+	function(ev)
+		return vim.bo[ev.buf].buftype == ""
+	end
+)
 load.on_file(function()
 	require("bufferline").setup({
 		options = {
@@ -274,4 +285,4 @@ load.on_file(function()
 			end,
 		},
 	})
-end)
+end, true) -- before the first draw: a winbar appearing later would shift the text

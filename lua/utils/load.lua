@@ -8,7 +8,8 @@ local group = vim.api.nvim_create_augroup("user.load", { clear = true })
 ---@param events string|string[]
 ---@param fn fun(ev: vim.api.keyset.create_autocmd.callback_args)
 ---@param pattern? string|string[]
-function M.on(events, fn, pattern)
+---@param cond? fun(ev: vim.api.keyset.create_autocmd.callback_args): boolean only fire when true
+function M.on(events, fn, pattern, cond)
 	local done = false
 	vim.api.nvim_create_autocmd(events, {
 		group = group,
@@ -17,6 +18,9 @@ function M.on(events, fn, pattern)
 			if done then
 				return true
 			end
+			if cond and not cond(ev) then
+				return
+			end
 			done = true
 			fn(ev)
 			return true -- delete the autocmd
@@ -24,7 +28,8 @@ function M.on(events, fn, pattern)
 	})
 end
 
---- Run `fn` right after startup has finished (like lazy.nvim's "VeryLazy").
+--- Run `fn` right after startup has finished, i.e. after the first screen has been drawn
+--- (like lazy.nvim's "VeryLazy"). After startup it is merely scheduled.
 ---@param fn fun()
 function M.later(fn)
 	if vim.v.vim_did_enter == 1 then
@@ -35,15 +40,19 @@ function M.later(fn)
 	end)
 end
 
-local file_queue, file_opened = {}, false
+local queue = { sync = {}, deferred = {} }
+local file_opened = false
 
 --- Run `fn` once the first real file is opened (not on the dashboard / empty start).
+--- By default `fn` runs after that file has been drawn; `sync = true` runs it before
+--- (for UI that would otherwise shift the layout, like a winbar).
 ---@param fn fun()
-function M.on_file(fn)
+---@param sync? boolean
+function M.on_file(fn, sync)
 	if file_opened then
-		return fn()
+		return sync and fn() or vim.schedule(fn)
 	end
-	table.insert(file_queue, fn)
+	table.insert(sync and queue.sync or queue.deferred, fn)
 end
 
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile", "BufWritePost" }, {
@@ -53,10 +62,16 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile", "BufWritePost" }, {
 			return
 		end
 		file_opened = true
-		for _, fn in ipairs(file_queue) do
+		for _, fn in ipairs(queue.sync) do
 			fn()
 		end
-		file_queue = {}
+		local deferred = queue.deferred
+		M.later(function()
+			for _, fn in ipairs(deferred) do
+				fn()
+			end
+		end)
+		queue = { sync = {}, deferred = {} }
 		return true
 	end,
 })

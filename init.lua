@@ -10,6 +10,21 @@ require("config.options")
 require("config.highlights")
 require("config.autocmds")
 require("config.keymaps")
-require("config.lsp")
 require("config.treesitter")
 require("plugins")
+
+-- LSP & diagnostics are loaded with the first real file, after it has been drawn
+-- (vim.lsp.enable() attaches to buffers whose FileType already fired).
+local load = require("utils.load")
+load.on(
+	{ "BufReadPre", "BufNewFile", "FileType" },
+	function()
+		load.later(function()
+			require("config.lsp")
+		end)
+	end,
+	nil,
+	function(ev)
+		return vim.bo[ev.buf].buftype == ""
+	end
+)
