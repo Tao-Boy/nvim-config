@@ -1,6 +1,14 @@
 -- Transparent backgrounds and a few custom groups, re-applied after every :colorscheme
 local set_hl = vim.api.nvim_set_hl
 
+--- Drop a group's background but keep the rest of the color scheme's definition (text color,
+--- bold, ...). `set_hl(0, name, { bg = "NONE" })` would replace the whole group.
+local function clear_bg(name)
+	local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+	hl.bg, hl.ctermbg = nil, nil
+	set_hl(0, name, hl)
+end
+
 local function apply()
 	-- Rainbow Colors
 	set_hl(0, "RainbowRed", { fg = "#E06C75" })
@@ -11,32 +19,27 @@ local function apply()
 	set_hl(0, "RainbowViolet", { fg = "#C678DD" })
 	set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
 
-	-- Float & Popup
-	set_hl(0, "NormalFloat", { bg = "NONE" })
-	set_hl(0, "FloatBorder", { bg = "NONE" })
-	set_hl(0, "Pmenu", { bg = "NONE" })
+	-- Window Separator (before the float groups: FloatBorder links to it)
+	set_hl(0, "WinSeparator", { fg = "#878787" })
 
-	-- Status Line
-	set_hl(0, "StatusLine", { bg = "NONE" })
+	-- Transparent background: editor, floats/popups, status/tab/win bars, sign column.
+	for _, group in ipairs({
+		"Normal", -- NormalNC / EndOfBuffer link to it
+		"NormalFloat",
+		"FloatBorder",
+		"Pmenu",
+		"StatusLine",
+		"TabLineFill",
+		"SignColumn",
+		"CursorLine",
+		"WinBar",
+		"WinBarNC",
+	}) do
+		clear_bg(group)
+	end
 	set_hl(0, "StatusLineNC", { link = "StatusLine" })
 	set_hl(0, "StatusLineTerm", { link = "StatusLine" })
 	set_hl(0, "StatusLineTermNC", { link = "StatusLine" })
-
-	-- Tab Line
-	set_hl(0, "TabLineFill", { bg = "NONE" })
-
-	-- Sign Column
-	set_hl(0, "SignColumn", { bg = "NONE" })
-
-	-- Cursor
-	set_hl(0, "CursorLine", { bg = "NONE" })
-
-	-- WinBar
-	set_hl(0, "WinBar", { bg = "NONE" })
-	set_hl(0, "WinBarNC", { bg = "NONE" })
-
-	-- Window Separator
-	set_hl(0, "WinSeparator", { fg = "#878787" })
 
 	-- Virtual Text
 	set_hl(0, "VirtualTextHint", { link = "DiagnosticHint" })
