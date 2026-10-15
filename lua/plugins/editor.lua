@@ -34,8 +34,8 @@ local function setup_oil()
 		view_options = { show_hidden = true },
 		cleanup_delay_ms = false,
 		float = { max_width = math.floor(vim.o.columns * 0.6) },
-		preview = { border = "single" },
-		progress = { border = "single" },
+		preview = { border = "rounded" },
+		progress = { border = "rounded" },
 		keymaps = {
 			["<C-s>"] = false,
 			["<C-h>"] = false,
@@ -73,7 +73,7 @@ end, { desc = "Open parent directory" })
 ---------------------------------------------------------------------------
 map("n", "<leader>o", function()
 	if vim.fn.exists(":Outline") == 0 then
-		require("outline").setup({ preview_window = { live = true } })
+		require("outline").setup({ preview_window = { live = true, border = "rounded" } })
 	end
 	vim.cmd.Outline()
 end, { desc = "Outline" })

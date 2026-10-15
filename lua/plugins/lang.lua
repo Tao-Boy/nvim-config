@@ -21,7 +21,6 @@ vim.g.vimtex_compiler_latexmk = {
 ---------------------------------------------------------------------------
 load.on("FileType", function()
 	load.later(function()
-		vim.cmd.packadd("typst-preview.nvim")
 		require("typst-preview").setup({
 			debug = false,
 			port = 8080,

@@ -1,5 +1,5 @@
--- Tiny deferred-loading helpers. vim.pack only puts plugins on 'runtimepath';
--- these decide *when* their setup code runs.
+-- Tiny deferred-loading helpers. vim.pack only installs plugins; these decide *when*
+-- optional plugins get on 'runtimepath' and when setup code runs.
 local M = {}
 
 local group = vim.api.nvim_create_augroup("user.load", { clear = true })
@@ -40,6 +40,71 @@ function M.later(fn)
 	end)
 end
 
+---------------------------------------------------------------------------
+-- Optional plugins: kept off 'runtimepath' until first needed
+---------------------------------------------------------------------------
+M.loaded = {} ---@type table<string, true> plugins on 'runtimepath' (set by plugins/init.lua too)
+local by_module = {} ---@type table<string, string[]> top-level Lua module -> optional plugins
+
+--- Put an optional plugin on 'runtimepath' and source its plugin/ files (once).
+---@param name string
+function M.packadd(name)
+	if M.loaded[name] then
+		return
+	end
+	M.loaded[name] = true
+	-- Before load-plugins (`:h startup`) only add it to 'rtp': startup sources its plugin/
+	-- files with all the others, `:packadd` would source them a second time.
+	vim.cmd.packadd({ name, bang = vim.v.vim_did_init == 0 })
+end
+
+--- Load optional plugins on the first `require` of any of their Lua modules (like lazy.nvim's
+--- `module` trigger), so setup code can simply `require()` them.
+---@param plugins {name: string, path: string}[]
+function M.on_require(plugins)
+	for _, p in ipairs(plugins) do
+		for entry, kind in vim.fs.dir(p.path .. "/lua") do
+			local mod = kind == "directory" and entry or entry:match("^([^.]+)%.")
+			if mod then
+				by_module[mod] = by_module[mod] or {}
+				table.insert(by_module[mod], p.name)
+			end
+		end
+	end
+end
+
+local function search(modname)
+	local names = by_module[modname:match("^[^.]+")]
+	if not names then
+		return
+	end
+	by_module[modname:match("^[^.]+")] = nil
+	for _, name in ipairs(names) do
+		M.packadd(name)
+	end
+	-- the plugin/ files just sourced may have loaded the module already (capture it now:
+	-- `require` puts a sentinel into package.loaded before calling the loader)
+	local mod = package.loaded[modname]
+	if mod ~= nil then
+		return function()
+			return mod
+		end
+	end
+	-- now on 'runtimepath': let the other searchers (vim.loader, ...) find it
+	for _, searcher in ipairs(package.loaders) do
+		if searcher ~= search then
+			local loader = searcher(modname)
+			if type(loader) == "function" then
+				return loader
+			end
+		end
+	end
+end
+table.insert(package.loaders, 2, search)
+
+---------------------------------------------------------------------------
+-- File-triggered setup
+---------------------------------------------------------------------------
 local queue = { sync = {}, deferred = {} }
 local file_opened = false
 

@@ -4,9 +4,6 @@ local load = require("utils.load")
 -- LuaSnip + blink.cmp (loaded on first insert / cmdline use)
 ---------------------------------------------------------------------------
 load.on({ "InsertEnter", "CmdlineEnter" }, function()
-	vim.cmd.packadd("LuaSnip")
-	vim.cmd.packadd("blink.cmp")
-
 	local luasnip = require("luasnip")
 	luasnip.config.setup({ enable_autosnippets = true })
 	require("luasnip.loaders.from_lua").lazy_load({ paths = { vim.fn.stdpath("config") .. "/snippets" } })
@@ -26,8 +23,9 @@ load.on({ "InsertEnter", "CmdlineEnter" }, function()
 		snippets = { preset = "luasnip" },
 		completion = {
 			menu = {
+				border = "rounded",
 				max_height = 8,
-				winhighlight = "Normal:None,FloatBorder:None,CursorLine:BlinkCmpMenuSelection,Search:None",
+				winhighlight = "Normal:None,CursorLine:BlinkCmpMenuSelection,Search:None",
 				scrollbar = false,
 				draw = {
 					treesitter = { "lsp" }, -- highlight labels with the buffer's (native) treesitter parser
@@ -35,14 +33,14 @@ load.on({ "InsertEnter", "CmdlineEnter" }, function()
 				},
 			},
 			list = { selection = { preselect = true, auto_insert = false } },
-			documentation = { auto_show = true, window = { scrollbar = false } },
+			documentation = { auto_show = true, window = { border = "rounded", scrollbar = false } },
 			accept = { auto_brackets = { enabled = false } },
 			trigger = {
 				prefetch_on_insert = false,
 				show_on_x_blocked_trigger_characters = { "'", '"', "(", "{" },
 			},
 		},
-		signature = { enabled = true },
+		signature = { enabled = true, window = { border = "rounded" } },
 		sources = {
 			default = { "lsp", "path", "buffer" },
 			providers = {
@@ -60,11 +58,8 @@ load.on({ "InsertEnter", "CmdlineEnter" }, function()
 				},
 			},
 		},
-		fuzzy = {
-			implementation = "prefer_rust_with_warning",
-			-- the binary is fetched by the vim.pack build hook (utils/functions.lua, honours gh_proxy)
-			prebuilt_binaries = { download = true, ignore_version_mismatch = true },
-		},
+		-- blink.cmp downloads its prebuilt fuzzy matcher for the checked out tag on its own
+		fuzzy = { implementation = "prefer_rust_with_warning" },
 	})
 end)
 

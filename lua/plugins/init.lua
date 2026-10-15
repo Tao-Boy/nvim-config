@@ -4,80 +4,23 @@
 --   :PackClean              delete plugins that are no longer listed below
 -- Revisions are pinned in `nvim-pack-lock.json`; keep it under version control.
 local ts = require("config.treesitter")
+local load = require("utils.load")
 
 local function gh(repo)
-	return (vim.g.gh_proxy or "") .. "https://github.com/" .. repo
+	return "https://github.com/" .. repo
 end
 
---- Route every github.com URL git sees through vim.g.gh_proxy while vim.pack is working.
---- The specs below already carry the prefix, but git submodules can use absolute
---- `https://github.com/...` URLs (e.g. tree-sitter-yaml's test suite). Where github.com
---- is unreachable such a clone stalls forever, and since vim.pack waits for all git jobs
---- without a timeout, Neovim froze during the first start.
---- Scoped through GIT_CONFIG_* env vars (inherited by vim.pack's git processes), so git
---- used from Neovim otherwise (terminal, pickers) is unaffected.
----@return fun() restore
-local function use_mirror()
-	local proxy = vim.g.gh_proxy or ""
-	if proxy == "" then
-		return function() end
-	end
-	local count = vim.env.GIT_CONFIG_COUNT
-	local n = tonumber(count) or 0
-	vim.env["GIT_CONFIG_KEY_" .. n] = ("url.%shttps://github.com/.insteadOf"):format(proxy)
-	vim.env["GIT_CONFIG_VALUE_" .. n] = "https://github.com/"
-	vim.env.GIT_CONFIG_COUNT = tostring(n + 1)
-	local restored = false
-	return function()
-		if restored then
-			return
-		end
-		restored = true
-		vim.env["GIT_CONFIG_KEY_" .. n] = nil
-		vim.env["GIT_CONFIG_VALUE_" .. n] = nil
-		vim.env.GIT_CONFIG_COUNT = count
-	end
-end
-
---- Point existing clones at their current `src`, e.g. after switching mirrors. vim.pack
---- only re-points a remote when the lockfile's `src` differs from the spec, which is no
---- longer the case once the lockfile itself carries the new mirror.
-local function sync_remotes()
-	local jobs = {}
-	for _, p in ipairs(vim.pack.get(nil, { info = false })) do
-		local cmd = { "git", "config", "--get", "remote.origin.url" }
-		table.insert(jobs, { p, vim.system(cmd, { cwd = p.path, text = true }) })
-	end
-	for _, job in ipairs(jobs) do
-		local p, res = job[1], job[2]:wait()
-		if res.code == 0 and vim.trim(res.stdout) ~= p.spec.src then
-			vim.system({ "git", "remote", "set-url", "origin", p.spec.src }, { cwd = p.path }):wait()
-		end
-	end
-end
-
---- vim.pack.update() wrapper: keep the mirror active while its confirmation buffer
---- (where `:write` applies the updates) is open.
-local function pack_update(names, opts)
-	sync_remotes()
-	local restore = use_mirror()
-	local ok, err = pcall(vim.pack.update, names, opts)
-	local buf = vim.api.nvim_get_current_buf()
-	if ok and vim.bo[buf].filetype == "nvim-pack" then
-		vim.api.nvim_create_autocmd("BufWipeout", { buffer = buf, once = true, callback = restore })
-	else
-		restore()
-	end
-	if not ok then
-		error(err, 0)
-	end
-end
-
+-- Only plugins marked `start` are put on 'runtimepath' at startup. All others are optional:
+-- they are `:packadd`-ed by the first `require()` of one of their modules (see utils/load.lua),
+-- i.e. when their setup code first runs.
 local specs = {
+	-- needed for the first screen
+	{ src = gh("folke/snacks.nvim"), data = { start = true } }, -- dashboard, notifier, bigfile, ...
+	{ src = gh("lervag/vimtex"), data = { start = true } }, -- its ftplugin must win over the built-in tex one
 	-- library / UI
 	gh("nvim-tree/nvim-web-devicons"),
 	gh("MunifTanjim/nui.nvim"),
-	gh("folke/snacks.nvim"),
+	gh("nvim-lua/plenary.nvim"),
 	gh("folke/persistence.nvim"),
 	gh("folke/noice.nvim"),
 	gh("folke/which-key.nvim"),
@@ -90,19 +33,39 @@ local specs = {
 	gh("hedyhli/outline.nvim"),
 	gh("akinsho/toggleterm.nvim"),
 	gh("windwp/nvim-autopairs"),
-	-- coding (`opt`: not loaded at startup, `:packadd`-ed on first use)
-	{ src = gh("L3MON4D3/LuaSnip"), version = vim.version.range("2"), data = { opt = true } },
-	{ src = gh("saghen/blink.cmp"), version = vim.version.range("1"), data = { opt = true } },
+	-- coding
+	{ src = gh("L3MON4D3/LuaSnip"), version = vim.version.range("2") },
+	{ src = gh("saghen/blink.cmp"), version = vim.version.range("1") },
 	gh("stevearc/conform.nvim"),
+	-- AI
+	gh("ColinKennedy/mega.logging"),
+	gh("ColinKennedy/mega.cmdparse"),
+	gh("yetone/avante.nvim"),
 	-- languages
-	gh("lervag/vimtex"), -- not lazy-loadable: its ftplugin must win over the built-in tex one
-	{ src = gh("chomosuke/typst-preview.nvim"), data = { opt = true } },
+	gh("chomosuke/typst-preview.nvim"),
 }
 
 -- Tree-sitter grammars are fetched (and updated / locked) by vim.pack as well,
 -- but never put on 'runtimepath': they are compiled into site/parser instead.
 for _, g in ipairs(ts.grammars) do
 	table.insert(specs, { src = gh(g.repo), name = g.name, data = { grammar = g.lang } })
+end
+
+--- avante.nvim: fetch its prebuilt Rust libraries (needs curl + tar; `:AvanteBuild` builds from source).
+local function build_avante(path)
+	local cmd = vim.fn.has("win32") == 1
+			and { "powershell", "-ExecutionPolicy", "Bypass", "-File", "Build.ps1", "-BuildFromSource", "false" }
+		or { "bash", "build.sh" }
+	vim.notify("avante.nvim: downloading prebuilt libraries ...")
+	vim.system(cmd, { cwd = path, text = true }, function(res)
+		vim.schedule(function()
+			if res.code == 0 then
+				vim.notify("avante.nvim: build finished")
+			else
+				vim.notify("avante.nvim: build failed\n" .. (res.stderr or ""), vim.log.levels.ERROR)
+			end
+		end)
+	end)
 end
 
 -- Build hooks. Must be registered before vim.pack.add() to catch fresh installs.
@@ -121,8 +84,8 @@ vim.api.nvim_create_autocmd("PackChanged", {
 		end
 		if lang then
 			ts.build(lang, data.path)
-		elseif data.spec.name == "blink.cmp" then
-			require("utils.functions").blink_cmp(data.path)
+		elseif data.spec.name == "avante.nvim" then
+			build_avante(data.path)
 		end
 	end,
 })
@@ -132,6 +95,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 -- `:packadd!`: plugins right after "site", their after/ dirs right before "site/after".
 -- plugin/ and ftdetect/ files are then sourced by the normal startup sequence.
 local rtp_dirs, rtp_after = {}, {}
+local optional = {} ---@type {name: string, path: string}[]
 
 -- First start: installing takes a while (everything is cloned before Neovim continues),
 -- so make vim.pack's progress messages visible instead of showing a frozen screen.
@@ -148,14 +112,18 @@ if installing then
 	vim.cmd.redraw()
 end
 
-local restore_git = use_mirror()
 local ok, err = pcall(vim.pack.add, specs, {
 	confirm = false,
 	load = function(plugin)
 		local data = plugin.spec.data
-		if type(data) == "table" and (data.grammar or data.opt) then
+		if type(data) == "table" and data.grammar then
 			return
 		end
+		if not (type(data) == "table" and data.start) then
+			table.insert(optional, { name = plugin.spec.name, path = plugin.path })
+			return
+		end
+		load.loaded[plugin.spec.name] = true
 		if vim.v.vim_did_enter == 1 then
 			return vim.cmd.packadd(plugin.spec.name)
 		end
@@ -165,11 +133,11 @@ local ok, err = pcall(vim.pack.add, specs, {
 		end
 	end,
 })
-restore_git()
 vim.o.cmdheight = cmdheight
 if not ok then
 	vim.notify("vim.pack: " .. tostring(err), vim.log.levels.ERROR)
 end
+load.on_require(optional)
 if #rtp_dirs > 0 then
 	-- normalize: on Windows 'rtp' entries use backslashes, stdpath() .. "/site" does not
 	local norm = vim.fs.normalize
@@ -202,7 +170,7 @@ end
 ts.build_all()
 
 vim.api.nvim_create_user_command("PackUpdate", function(opts)
-	pack_update(#opts.fargs > 0 and opts.fargs or nil)
+	vim.pack.update(#opts.fargs > 0 and opts.fargs or nil)
 end, {
 	nargs = "*",
 	desc = "Update plugins",
@@ -213,7 +181,7 @@ end, {
 	end,
 })
 vim.api.nvim_create_user_command("PackStatus", function()
-	pack_update(nil, { offline = true })
+	vim.pack.update(nil, { offline = true })
 end, { desc = "Show plugin status" })
 vim.api.nvim_create_user_command("PackClean", function()
 	local stale = vim.iter(vim.pack.get(nil, { info = false }))
@@ -236,3 +204,4 @@ require("plugins.ui")
 require("plugins.editor")
 require("plugins.coding")
 require("plugins.lang")
+require("plugins.ai")
