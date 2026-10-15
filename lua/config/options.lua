@@ -1,8 +1,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
--- GitHub mirror prefix used for plugin/grammar sources ("" to clone from github.com directly).
--- NOTE: it is recorded in nvim-pack-lock.json, so keep it identical across machines.
-vim.g.gh_proxy = "gh.nullcode.cc/"
+-- GitHub mirror, prepended to full GitHub URLs: <gh_proxy>https://github.com/owner/repo
+-- ("" to use github.com directly). Plugin sources (and so nvim-pack-lock.json) contain it:
+-- when switching mirrors, update the lockfile's "src" fields too, then run :PackUpdate.
+vim.g.gh_proxy = "https://gh-proxy.org/"
 vim.g.no_plugin_maps = true
 vim.g.tex_flavor = "latex"
 
