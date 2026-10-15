@@ -4,24 +4,28 @@ local icons = require("utils.custom").icons
 ---------------------------------------------------------------------------
 -- snacks.nvim: dashboard, picker, notifier, indent guides, ... (needed at startup)
 ---------------------------------------------------------------------------
-local startup_ms ---@type number?
+local startup ---@type {ms: number, loaded: integer, total: integer}?
 local function startup_section()
-	if not startup_ms then
+	if not startup then
 		local now = vim.uv.clock_gettime("realtime")
-		startup_ms = (now.sec * 1e9 + now.nsec - vim.v.starttime) / 1e6
+		local plugins = vim.iter(vim.pack.get(nil, { info = false }))
+			:filter(function(p)
+				return p.active and not (type(p.spec.data) == "table" and p.spec.data.grammar)
+			end)
+			:totable()
+		startup = {
+			ms = (now.sec * 1e9 + now.nsec - vim.v.starttime) / 1e6,
+			loaded = vim.tbl_count(load.loaded),
+			total = #plugins,
+		}
 	end
-	local plugins = vim.iter(vim.pack.get(nil, { info = false }))
-		:filter(function(p)
-			return p.active and not (type(p.spec.data) == "table" and p.spec.data.grammar)
-		end)
-		:totable()
 	return {
 		align = "center",
 		text = {
 			{ "⚡ Neovim loaded ", hl = "footer" },
-			{ tostring(#plugins), hl = "special" },
+			{ ("%d/%d"):format(startup.loaded, startup.total), hl = "special" },
 			{ " plugins in ", hl = "footer" },
-			{ ("%.2fms"):format(startup_ms), hl = "special" },
+			{ ("%.2fms"):format(startup.ms), hl = "special" },
 		},
 	}
 end
@@ -140,13 +144,15 @@ load.on_file(function()
 		show_help = false,
 		preset = "helix",
 		icons = { mappings = vim.g.have_nerd_font },
-		win = { title_pos = "center" },
+		win = { border = "rounded", title_pos = "center" },
 	})
 	wk.add({
+		{ "<leader>a", group = "AI (Avante)" },
 		{ "<leader>b", group = "Buffer Operations" },
 		{ "<leader>c", group = "Code Operations" },
 		{ "<leader>f", group = "Find Operations" },
 		{ "<leader>l", group = "Latex" },
+		{ "<leader>t", group = "Typst" },
 	})
 end)
 map("n", "<leader>?", function()
@@ -174,8 +180,8 @@ load.on_file(function()
 	require("lualine").setup({
 		options = {
 			theme = auto,
-			component_separators = { left = "", right = "" },
-			section_separators = { left = "", right = "" },
+			component_separators = "",
+			section_separators = { left = "", right = "" },
 			disabled_filetypes = { statusline = { "snacks_dashboard" } },
 			globalstatus = true,
 			refresh = {
@@ -184,7 +190,7 @@ load.on_file(function()
 			},
 		},
 		sections = {
-			lualine_a = { "mode" },
+			lualine_a = { { "mode", separator = { left = "" }, right_padding = 2 } },
 			lualine_b = { "branch", "diff" },
 			lualine_c = {
 				{ lsp_clients, icon = "" },
@@ -195,9 +201,13 @@ load.on_file(function()
 			lualine_x = { "filename" },
 			lualine_y = { "filetype", "progress" },
 			lualine_z = {
-				function()
-					return os.date(" %H:%M")
-				end,
+				{
+					function()
+						return os.date(" %H:%M")
+					end,
+					separator = { right = "" },
+					left_padding = 2,
+				},
 			},
 		},
 		inactive_sections = {
@@ -256,6 +266,7 @@ map("n", "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", { desc = "Delete Buffers 
 load.on_file(function()
 	require("dropbar").setup({
 		icons = { kinds = { symbols = icons.kind_with_space } },
+		menu = { win_configs = { border = "rounded" } },
 		bar = {
 			hover = false,
 			enable = function(buf, win)
