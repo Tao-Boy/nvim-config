@@ -1,97 +1,106 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+-- GitHub mirror prefix used for plugin/grammar sources ("" to clone from github.com directly).
+-- NOTE: it is recorded in nvim-pack-lock.json, so keep it identical across machines.
 vim.g.gh_proxy = "gh.nullcode.cc/"
+vim.g.no_plugin_maps = true
+vim.g.tex_flavor = "latex"
 
-require("utils.autocmds")
-vim.cmd.colorscheme("catppuccin")
+-- Disable unused built-in plugins (oil.nvim replaces netrw)
+for _, plugin in ipairs({
+	"gzip",
+	"matchit",
+	"netrw",
+	"netrwPlugin",
+	"remote_plugins",
+	"tar",
+	"tarPlugin",
+	"zip",
+	"zipPlugin",
+}) do
+	vim.g["loaded_" .. plugin] = 1
+end
 
-vim.opt.background = "dark" -- Set background to dark
-vim.opt.termguicolors = true -- Enable true color support
-vim.opt.cursorline = true -- enable highlighting of the current line
-vim.opt.signcolumn = "yes" -- Always show the sign column
-vim.opt.fillchars = { eob = " ", diff = "\u{2591}" } -- Set fill characters (end of buffer and diff)
-vim.opt.list = false -- Disable showing whitespace characters
-vim.opt.wrap = false -- Disable automatic line wrapping
-vim.opt.formatoptions:remove({ "r", "o" }) -- Disable comment continuation
-vim.opt.conceallevel = 0 -- Disable text concealment
-vim.opt.pumblend = 20 -- Popup menu transparency
-require("utils.highlights")
+local opt = vim.opt
 
--- Line numbers and scrolling
-vim.opt.number = true -- Show line numbers
-vim.opt.cursorlineopt = "number"
-vim.opt.relativenumber = false -- Disable relative line numbers
-vim.opt.ruler = false -- Disable ruler display
-vim.opt.scrolloff = 0 -- Number of lines to keep above/below cursor when scrolling vertically
-vim.opt.sidescrolloff = 8 -- Number of columns to keep left/right of cursor when scrolling horizontally
+-- UI
+opt.background = "dark"
+opt.termguicolors = true
+opt.cursorline = true
+opt.cursorlineopt = "number"
+opt.number = true
+opt.relativenumber = false
+opt.signcolumn = "yes"
+opt.fillchars = { eob = " ", diff = "\u{2591}" }
+opt.list = false
+opt.wrap = false
+opt.conceallevel = 0
+opt.pumblend = 20
+opt.winborder = "rounded" -- default border for every floating window (LSP hover, diagnostics, ...)
+opt.ruler = false
+opt.scrolloff = 0
+opt.sidescrolloff = 8
+opt.title = false
 
--- Windows and layout
-vim.opt.splitbelow = true -- Open horizontal splits below
-vim.opt.splitright = true -- Open vertical splits to the right
-vim.opt.laststatus = 3 -- Global statusline
-vim.opt.statusline = " " -- Statusline content
-vim.opt.cmdheight = 0 -- Command line height set to 0
-vim.opt.showcmd = false -- Disable showing command in bottom bar
-vim.opt.showmode = false -- Disable showing mode in bottom bar
+-- Statusline / cmdline (lualine + noice take over)
+opt.laststatus = 3
+opt.statusline = " "
+opt.cmdheight = 0
+opt.showcmd = false
+opt.showmode = false
 
--- Indentation and tabs
-vim.opt.tabstop = 4 -- Tab width is 2 spaces
-vim.opt.shiftwidth = 4 -- Indent width is 2 spaces
-vim.opt.expandtab = true -- Use spaces instead of tabs
-vim.opt.smartindent = true -- Enable smart indentation
+-- Windows
+opt.splitbelow = true
+opt.splitright = true
 
--- Searching
-vim.opt.incsearch = true -- Incremental search
-vim.opt.hlsearch = false -- Disable search highlighting
-vim.opt.ignorecase = true -- Ignore case in searches
-vim.opt.smartcase = true -- Smart case (case-sensitive if uppercase letters are used)
+-- Indentation
+opt.tabstop = 4
+opt.shiftwidth = 4
+opt.expandtab = true
+opt.smartindent = true
+opt.formatoptions:remove({ "r", "o" }) -- no comment continuation
 
--- Undo and backup
-vim.opt.undofile = true -- Enable persistent undo
-vim.opt.undolevels = 1000 -- Number of undo levels
-vim.opt.backup = false -- Disable backup files
-vim.opt.writebackup = false -- Disable write backup
-vim.opt.swapfile = false -- Disable swap files
+-- Search
+opt.hlsearch = false
+opt.ignorecase = true
+opt.smartcase = true
 
--- Sessions and views
-vim.opt.viewoptions = "folds,cursor" -- What to save in view files
-vim.opt.sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,terminal" -- Session saving options
-vim.opt.shada = "'100,<50,s10,h" -- ShaDa file configuration
+-- Files, undo & sessions
+opt.undofile = true
+opt.undolevels = 1000
+opt.backup = false
+opt.writebackup = false
+opt.swapfile = false
+opt.autoread = true
+opt.fixeol = false
+opt.viewoptions = "folds,cursor"
+opt.sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,terminal"
+opt.shada = "'100,<50,s10,h"
 
--- Folding
-vim.o.foldmethod = "expr" -- Folding method is expr
-vim.o.foldenable = false -- Disable folding
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.o.foldlevel = 99 -- Folding level
-vim.o.foldlevelstart = 1 -- Initial folding level
-vim.o.foldcolumn = "0" -- Width of the fold column
-vim.opt.foldtext = "" -- Fold text
-vim.opt.foldnestmax = 4 -- Maximum fold nesting
+-- Folding: foldexpr is set per window from treesitter / LSP (see config/treesitter.lua & config/lsp.lua)
+opt.foldmethod = "expr"
+opt.foldexpr = "0"
+opt.foldenable = false
+opt.foldlevel = 99
+opt.foldlevelstart = 1
+opt.foldcolumn = "0"
+opt.foldtext = ""
+opt.foldnestmax = 4
 
--- Completion and input
-vim.opt.completeopt = { "menu", "menuone", "noselect" } -- Completion options
-vim.opt.shortmess = vim.o.shortmess .. "a" -- Shorten message display
-vim.opt.timeoutlen = 400 -- Timeout for key mappings (ms)
+-- Completion & input
+opt.completeopt = { "menu", "menuone", "noselect" }
+opt.shortmess:append("a")
+opt.timeoutlen = 400
+opt.updatetime = 200
+opt.mouse = "a"
+opt.spell = false
+opt.iskeyword = "@,48-57,_,192-255,-"
 
--- Mouse
-vim.opt.mouse = "a" -- Enable mouse support in all modes
-
--- Clipboard
+-- Sync with the system clipboard without slowing down startup
 vim.schedule(function()
-	vim.opt.clipboard = "unnamedplus" -- Use system clipboard
+	opt.clipboard = "unnamedplus"
 end)
 
--- Spelling and encoding
-vim.opt.spell = false -- Disable spell checking
-vim.opt.fileencoding = "utf-8" -- File encoding is UTF-8
+vim.lsp.log.set_level(vim.log.levels.OFF)
 
--- Miscellaneous
-vim.opt.autoread = true -- Automatically reload files changed externally
-vim.opt.updatetime = 200 -- Update time (ms)
-vim.opt.fixeol = false -- Do not enforce end-of-file newline
-vim.opt.title = false -- Disable window title
-vim.g.asyncrun_open = 6 -- Async run window setting
-vim.g.tex_flavor = "latex" -- TeX file type
-vim.lsp.log.set_level(vim.log.levels.OFF) -- LSP log level
-vim.o.iskeyword = "@,48-57,_,192-255,-" -- Keyword character definition
-vim.g.no_plugin_maps = true
+vim.cmd.colorscheme("catppuccin") -- bundled with Neovim
