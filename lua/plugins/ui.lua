@@ -152,6 +152,7 @@ load.on_file(function()
 		{ "<leader>c", group = "Code Operations" },
 		{ "<leader>f", group = "Find Operations" },
 		{ "<leader>l", group = "Latex" },
+		{ "<leader>t", group = "Typst" },
 	})
 end)
 map("n", "<leader>?", function()

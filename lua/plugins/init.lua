@@ -12,11 +12,10 @@ end
 
 -- Only plugins marked `start` are put on 'runtimepath' at startup. All others are optional:
 -- they are `:packadd`-ed by the first `require()` of one of their modules (see utils/load.lua),
--- i.e. when their setup code first runs.
+-- i.e. when their setup code first runs, or by an explicit `load.packadd()`.
 local specs = {
 	-- needed for the first screen
 	{ src = gh("folke/snacks.nvim"), data = { start = true } }, -- dashboard, notifier, bigfile, ...
-	{ src = gh("lervag/vimtex"), data = { start = true } }, -- its ftplugin must win over the built-in tex one
 	-- library / UI
 	gh("nvim-tree/nvim-web-devicons"),
 	gh("MunifTanjim/nui.nvim"),
@@ -42,7 +41,7 @@ local specs = {
 	gh("ColinKennedy/mega.cmdparse"),
 	gh("yetone/avante.nvim"),
 	-- languages
-	gh("chomosuke/typst-preview.nvim"),
+	gh("lervag/vimtex"), -- loaded on FileType tex/bib (plugins/lang.lua)
 }
 
 -- Tree-sitter grammars are fetched (and updated / locked) by vim.pack as well,

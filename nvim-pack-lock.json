@@ -126,10 +126,6 @@
       "rev": "a1c4812a73ec5e089de8e441fdea3a921e8d5079",
       "src": "https://github.com/tree-sitter-grammars/tree-sitter-yaml"
     },
-    "typst-preview.nvim": {
-      "rev": "1c2e19486397be1c580b560fc50ee36abe329c46",
-      "src": "https://github.com/chomosuke/typst-preview.nvim"
-    },
     "vimtex": {
       "rev": "98615cefc441aaa5721c144ecfeacddcdf78816d",
       "src": "https://github.com/lervag/vimtex"

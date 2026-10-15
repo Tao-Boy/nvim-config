@@ -6,7 +6,7 @@ local icons = require("utils.custom").icons
 vim.lsp.log.set_level(vim.log.levels.OFF)
 
 -- Server configs live in `lsp/<name>.lua` and are picked up by vim.lsp.config automatically.
-vim.lsp.enable({ "lua_ls", "ty", "rust_analyzer", "clangd" })
+vim.lsp.enable({ "lua_ls", "ty", "rust_analyzer", "clangd", "tinymist" })
 
 vim.diagnostic.config({
 	virtual_text = false,
