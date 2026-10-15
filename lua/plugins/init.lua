@@ -6,7 +6,7 @@
 local ts = require("config.treesitter")
 
 local function gh(repo)
-	return "https://" .. (vim.g.gh_proxy or "") .. "github.com/" .. repo
+	return (vim.g.gh_proxy or "") .. "https://github.com/" .. repo
 end
 
 --- Route every github.com URL git sees through vim.g.gh_proxy while vim.pack is working.
@@ -24,7 +24,7 @@ local function use_mirror()
 	end
 	local count = vim.env.GIT_CONFIG_COUNT
 	local n = tonumber(count) or 0
-	vim.env["GIT_CONFIG_KEY_" .. n] = ("url.https://%sgithub.com/.insteadOf"):format(proxy)
+	vim.env["GIT_CONFIG_KEY_" .. n] = ("url.%shttps://github.com/.insteadOf"):format(proxy)
 	vim.env["GIT_CONFIG_VALUE_" .. n] = "https://github.com/"
 	vim.env.GIT_CONFIG_COUNT = tostring(n + 1)
 	local restored = false
@@ -39,9 +39,27 @@ local function use_mirror()
 	end
 end
 
+--- Point existing clones at their current `src`, e.g. after switching mirrors. vim.pack
+--- only re-points a remote when the lockfile's `src` differs from the spec, which is no
+--- longer the case once the lockfile itself carries the new mirror.
+local function sync_remotes()
+	local jobs = {}
+	for _, p in ipairs(vim.pack.get(nil, { info = false })) do
+		local cmd = { "git", "config", "--get", "remote.origin.url" }
+		table.insert(jobs, { p, vim.system(cmd, { cwd = p.path, text = true }) })
+	end
+	for _, job in ipairs(jobs) do
+		local p, res = job[1], job[2]:wait()
+		if res.code == 0 and vim.trim(res.stdout) ~= p.spec.src then
+			vim.system({ "git", "remote", "set-url", "origin", p.spec.src }, { cwd = p.path }):wait()
+		end
+	end
+end
+
 --- vim.pack.update() wrapper: keep the mirror active while its confirmation buffer
 --- (where `:write` applies the updates) is open.
 local function pack_update(names, opts)
+	sync_remotes()
 	local restore = use_mirror()
 	local ok, err = pcall(vim.pack.update, names, opts)
 	local buf = vim.api.nvim_get_current_buf()

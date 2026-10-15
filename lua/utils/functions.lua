@@ -20,7 +20,7 @@ M.blink_cmp = function(path)
 
 	local tag = vim.system({ "git", "describe", "--tags", "--exact-match", "HEAD" }, { cwd = path, text = true }):wait()
 	local release = tag.code == 0 and ("download/" .. vim.trim(tag.stdout)) or "latest/download"
-	local url = ("https://%sgithub.com/Saghen/blink.cmp/releases/%s/%s%s"):format(
+	local url = ("%shttps://github.com/Saghen/blink.cmp/releases/%s/%s%s"):format(
 		vim.g.gh_proxy or "",
 		release,
 		triple,
