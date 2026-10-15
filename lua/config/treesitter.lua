@@ -57,6 +57,34 @@ end
 
 local building = {} ---@type table<string, true>
 
+--- The C compiler to build parsers with: $CC, else the first of cc/gcc/clang on PATH.
+--- Calling it directly avoids `tree-sitter build`, which on Windows only looks for MSVC's
+--- cl.exe even when gcc (MinGW) or clang is installed.
+---@return string?
+local function c_compiler()
+	for _, cc in ipairs({ vim.env.CC or "", "cc", "gcc", "clang" }) do
+		if cc ~= "" and vim.fn.executable(cc) == 1 then
+			return cc
+		end
+	end
+end
+
+local is_win = vim.fn.has("win32") == 1
+
+--- Put a freshly built parser in place. Linux/macOS: rename over the old file (a parser
+--- already loaded in this session keeps working). Windows cannot replace a loaded DLL but
+--- can rename it, so move the old one aside first; it is deleted on a later build.
+local function install_parser(tmp, out)
+	if vim.uv.fs_rename(tmp, out) then
+		return true
+	end
+	local old = out .. ".old"
+	vim.uv.fs_unlink(old)
+	vim.uv.fs_rename(out, old)
+	local ok, err = vim.uv.fs_rename(tmp, out)
+	return ok, err
+end
+
 --- Compile a grammar repo at `path` into `site/parser/<lang>.so` (async).
 ---@param lang string
 ---@param path string
@@ -69,18 +97,27 @@ function M.build(lang, path)
 		return vim.notify(("treesitter: %s has no src/parser.c"):format(path), vim.log.levels.ERROR)
 	end
 	vim.fn.mkdir(site .. "/parser", "p")
-	local out = ("%s/parser/%s.so"):format(site, lang)
+	local out = ("%s/parser/%s.so"):format(site, lang) -- Neovim loads parser/<lang>.* on every OS
 	local tmp = out .. ".tmp"
+	vim.uv.fs_unlink(out .. ".old") -- leftover from a rebuild on Windows
 
 	local cmd
-	if vim.fn.executable("tree-sitter") == 1 then
-		cmd = { "tree-sitter", "build", "-o", tmp, path }
-	else
-		local cc = vim.env.CC or "cc"
-		cmd = { cc, "-o", tmp, "-shared", "-fPIC", "-O2", "-std=c11", "-I", src, src .. "/parser.c" }
+	local cc = c_compiler()
+	if cc then
+		cmd = { cc, "-o", tmp, "-shared", "-O2", "-std=c11", "-I", src, src .. "/parser.c" }
+		if not is_win then
+			table.insert(cmd, 4, "-fPIC")
+		end
 		if vim.uv.fs_stat(src .. "/scanner.c") then
 			table.insert(cmd, src .. "/scanner.c")
 		end
+	elseif vim.fn.executable("tree-sitter") == 1 then
+		cmd = { "tree-sitter", "build", "-o", tmp, path }
+	else
+		return vim.notify(
+			("treesitter: cannot build %s, no C compiler found (install gcc/clang or set $CC)"):format(lang),
+			vim.log.levels.ERROR
+		)
 	end
 
 	building[lang] = true
@@ -91,8 +128,10 @@ function M.build(lang, path)
 				vim.fn.delete(tmp)
 				return vim.notify(("treesitter: building %s failed\n%s"):format(lang, res.stderr), vim.log.levels.ERROR)
 			end
-			-- Rename over the old file: a parser already loaded in this session keeps working.
-			vim.uv.fs_rename(tmp, out)
+			local ok, err = install_parser(tmp, out)
+			if not ok then
+				return vim.notify(("treesitter: installing %s failed: %s"):format(lang, err), vim.log.levels.ERROR)
+			end
 			copy_queries(path, lang)
 			M.reset(lang)
 			vim.notify(("treesitter: built %s"):format(lang))

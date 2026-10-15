@@ -8,7 +8,8 @@ vim.g.vimtex_view_general_viewer = "echo"
 vim.g.vimtex_compiler_method = "latexmk"
 vim.g.vimtex_fold_enabled = 1
 vim.g.vimtex_compiler_latexmk = {
-	aux_dir = "/dev/shm/",
+	-- keep aux files in RAM where available (Linux); latexmk's default elsewhere (Windows)
+	aux_dir = vim.fn.isdirectory("/dev/shm") == 1 and "/dev/shm/" or nil,
 	out_dir = "./",
 	callback = 1,
 	continuous = 1,
