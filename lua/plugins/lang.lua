@@ -19,19 +19,21 @@ vim.g.vimtex_compiler_latexmk = {
 -- typst-preview.nvim
 ---------------------------------------------------------------------------
 load.on("FileType", function()
-	vim.cmd.packadd("typst-preview.nvim")
-	require("typst-preview").setup({
-		debug = false,
-		port = 8080,
-		dependencies_bin = {
-			["tinymist"] = "tinymist",
-			["websocat"] = "websocat",
-		},
-		get_root = function(path)
-			if not path or path == "" then
-				return vim.fn.getcwd()
-			end
-			return vim.fs.root(path, { "typst.toml", ".git" }) or vim.fs.dirname(vim.fn.fnamemodify(path, ":p"))
-		end,
-	})
+	load.later(function()
+		vim.cmd.packadd("typst-preview.nvim")
+		require("typst-preview").setup({
+			debug = false,
+			port = 8080,
+			dependencies_bin = {
+				["tinymist"] = "tinymist",
+				["websocat"] = "websocat",
+			},
+			get_root = function(path)
+				if not path or path == "" then
+					return vim.fn.getcwd()
+				end
+				return vim.fs.root(path, { "typst.toml", ".git" }) or vim.fs.dirname(vim.fn.fnamemodify(path, ":p"))
+			end,
+		})
+	end)
 end, "typst")

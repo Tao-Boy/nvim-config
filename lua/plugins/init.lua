@@ -31,7 +31,7 @@ local specs = {
 	{ src = gh("saghen/blink.cmp"), version = vim.version.range("1"), data = { opt = true } },
 	gh("stevearc/conform.nvim"),
 	-- languages
-	gh("lervag/vimtex"),
+	gh("lervag/vimtex"), -- not lazy-loadable: its ftplugin must win over the built-in tex one
 	{ src = gh("chomosuke/typst-preview.nvim"), data = { opt = true } },
 }
 
@@ -63,6 +63,11 @@ vim.api.nvim_create_autocmd("PackChanged", {
 	end,
 })
 
+-- During startup, collect plugin dirs and put them on 'runtimepath' in one go instead of one
+-- `:packadd!` (a 'packpath' glob + 'rtp' rewrite) per plugin. The resulting order matches
+-- `:packadd!`: plugins right after "site", their after/ dirs right before "site/after".
+-- plugin/ and ftdetect/ files are then sourced by the normal startup sequence.
+local rtp_dirs, rtp_after = {}, {}
 vim.pack.add(specs, {
 	confirm = false,
 	load = function(plugin)
@@ -70,11 +75,40 @@ vim.pack.add(specs, {
 		if type(data) == "table" and (data.grammar or data.opt) then
 			return
 		end
-		-- Like the default: `:packadd!` while sourcing init.lua (plugin/ files are then
-		-- sourced by the normal startup sequence), `:packadd` afterwards.
-		vim.cmd.packadd({ plugin.spec.name, bang = vim.v.vim_did_enter == 0 })
+		if vim.v.vim_did_enter == 1 then
+			return vim.cmd.packadd(plugin.spec.name)
+		end
+		table.insert(rtp_dirs, plugin.path)
+		if vim.uv.fs_stat(plugin.path .. "/after") then
+			table.insert(rtp_after, 1, plugin.path .. "/after")
+		end
 	end,
 })
+if #rtp_dirs > 0 then
+	local site = vim.fn.stdpath("data") .. "/site"
+	local rtp = vim.opt.rtp:get()
+	local out = {}
+	for _, dir in ipairs(rtp) do
+		if dir == site .. "/after" then
+			vim.list_extend(out, rtp_after)
+			rtp_after = {}
+		end
+		table.insert(out, dir)
+		if dir == site then
+			vim.list_extend(out, rtp_dirs)
+			rtp_dirs = {}
+		end
+	end
+	-- 'site' not on 'rtp' (unusual setups): append whatever is left
+	vim.list_extend(out, rtp_dirs)
+	vim.list_extend(out, rtp_after)
+	vim.o.runtimepath = table.concat(
+		vim.tbl_map(function(dir)
+			return (dir:gsub(",", "\\,"))
+		end, out),
+		","
+	)
+end
 
 -- Grammars whose build failed or was skipped (e.g. compiler missing at install time)
 ts.build_all()

@@ -5,7 +5,6 @@
 --     uses the built-in `an` / `in` / `]n` / `[n` mappings
 local M = {}
 
-local ts = vim.treesitter
 local site = vim.fn.stdpath("data") .. "/site"
 
 -- Parsers bundled with Neovim: c, lua, vim, vimdoc, query, markdown, markdown_inline.
@@ -28,10 +27,8 @@ for _, g in ipairs(M.grammars) do
 	g.name = g.repo:match("[^/]+$") -- vim.pack plugin name
 end
 
--- Upstream queries use `#is-not? local`, which needs locals tracking Neovim does not do.
-ts.query.add_predicate("is-not?", function()
-	return true
-end, { force = true })
+-- NOTE: `vim.treesitter` is only touched once a real file is opened, so starting on the
+-- dashboard / an empty buffer does not pay for loading it.
 
 ---------------------------------------------------------------------------
 -- Building grammars
@@ -52,7 +49,7 @@ end
 
 local function restart_buffers(lang)
 	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.api.nvim_buf_is_loaded(buf) and ts.language.get_lang(vim.bo[buf].filetype) == lang then
+		if vim.api.nvim_buf_is_loaded(buf) and vim.treesitter.language.get_lang(vim.bo[buf].filetype) == lang then
 			M.attach(buf)
 		end
 	end
@@ -97,6 +94,7 @@ function M.build(lang, path)
 			-- Rename over the old file: a parser already loaded in this session keeps working.
 			vim.uv.fs_rename(tmp, out)
 			copy_queries(path, lang)
+			M.reset(lang)
 			vim.notify(("treesitter: built %s"):format(lang))
 			restart_buffers(lang)
 		end)
@@ -125,21 +123,48 @@ end
 ---------------------------------------------------------------------------
 
 local function has_query(lang, name)
-	local ok, query = pcall(ts.query.get, lang, name)
+	local ok, query = pcall(vim.treesitter.query.get, lang, name)
 	return ok and query ~= nil
+end
+
+local predicates_added = false
+-- Per-language capability cache, so filetypes without a parser (plugin UIs, ...) do not
+-- search 'runtimepath' for parser/queries on every FileType event.
+local cache = {} ---@type table<string, {highlights: boolean, folds: boolean}>
+
+local function capabilities(lang)
+	if not cache[lang] then
+		if not predicates_added then
+			predicates_added = true
+			-- Upstream queries use `#is-not? local`, which needs locals tracking Neovim does not do.
+			vim.treesitter.query.add_predicate("is-not?", function()
+				return true
+			end, { force = true })
+		end
+		local ok = vim.treesitter.language.add(lang) and has_query(lang, "highlights")
+		cache[lang] = { highlights = ok or false, folds = ok and has_query(lang, "folds") or false }
+	end
+	return cache[lang]
+end
+
+--- Forget cached capabilities (after (re)building a parser).
+---@param lang string
+function M.reset(lang)
+	cache[lang] = nil
 end
 
 --- Start treesitter highlighting and folding for `buf` when possible.
 ---@param buf integer
 function M.attach(buf)
-	local lang = ts.language.get_lang(vim.bo[buf].filetype)
-	if not lang or not ts.language.add(lang) or not has_query(lang, "highlights") then
+	local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
+	local caps = lang and capabilities(lang)
+	if not caps or not caps.highlights then
 		return
 	end
-	if not ts.highlighter.active[buf] then
-		ts.start(buf, lang)
+	if not vim.treesitter.highlighter.active[buf] then
+		vim.treesitter.start(buf, lang)
 	end
-	if has_query(lang, "folds") then
+	if caps.folds then
 		for _, win in ipairs(vim.fn.win_findbuf(buf)) do
 			vim.wo[win][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
 		end
@@ -151,7 +176,12 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = group,
 	desc = "Start treesitter",
 	callback = function(ev)
-		M.attach(ev.buf)
+		-- only file buffers: scratch/plugin buffers (dashboard, pickers, hover docs, ...)
+		-- either have no parser or start treesitter themselves (markdown/help ftplugins)
+		local bt = vim.bo[ev.buf].buftype
+		if bt == "" or bt == "acwrite" then
+			M.attach(ev.buf)
+		end
 	end,
 })
 
@@ -274,7 +304,7 @@ end
 
 local function textobject(key, inner)
 	return function()
-		local ok, node = pcall(ts.get_node, { ignore_injections = false })
+		local ok, node = pcall(vim.treesitter.get_node, { ignore_injections = false })
 		node = ok and node and find(node, key)
 		if not node then
 			return
