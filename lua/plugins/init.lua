@@ -171,16 +171,18 @@ if not ok then
 	vim.notify("vim.pack: " .. tostring(err), vim.log.levels.ERROR)
 end
 if #rtp_dirs > 0 then
-	local site = vim.fn.stdpath("data") .. "/site"
+	-- normalize: on Windows 'rtp' entries use backslashes, stdpath() .. "/site" does not
+	local norm = vim.fs.normalize
+	local site = norm(vim.fn.stdpath("data") .. "/site")
 	local rtp = vim.opt.rtp:get()
 	local out = {}
 	for _, dir in ipairs(rtp) do
-		if dir == site .. "/after" then
+		if norm(dir) == site .. "/after" then
 			vim.list_extend(out, rtp_after)
 			rtp_after = {}
 		end
 		table.insert(out, dir)
-		if dir == site then
+		if norm(dir) == site then
 			vim.list_extend(out, rtp_dirs)
 			rtp_dirs = {}
 		end
