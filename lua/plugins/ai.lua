@@ -26,6 +26,19 @@ local function setup()
 			edit = { border = "rounded" },
 			ask = { border = "rounded" },
 		},
+		-- <M-l> is <A-l> (cursor right in insert mode, config/keymaps.lua)
+		mappings = { suggestion = { accept = "<C-y>" } },
+	})
+
+	-- Inline suggestions: avante keeps one suggestion engine per tab page but creates it only
+	-- for the first ones, while an engine's autocmds are global. In later tabs suggestions still
+	-- show up, but accepting / cycling / dismissing them fails (`sg` is nil). The engine's state
+	-- is per buffer, so let every tab page use the first one.
+	setmetatable(require("avante").suggestions, {
+		__index = function(engines)
+			local _, engine = next(engines)
+			return engine
+		end,
 	})
 end
 
@@ -47,6 +60,10 @@ map("n", "<leader>at", function()
 	setup()
 	require("avante").toggle()
 end, { desc = "avante: toggle" })
+map("n", "<leader>as", function()
+	setup()
+	require("avante").toggle.suggestion()
+end, { desc = "avante: toggle suggestion" })
 
 -- Command stubs: load avante (its plugin/ file defines the real commands), then re-run
 local commands = {
